@@ -1,0 +1,20 @@
+{% extends "base.html.twig" %}
+
+{% block content %}
+
+    {{ pageTitle }}
+    
+    <ul class="homepage">
+        {% for article in articles %}
+            <li>
+                {{ article.name }}<br>
+                {{ article.content }}<br>
+                {{ article.date.date }}<br>
+                {{ article.author }}<br>
+                <hr><br>
+            </li>
+        {% else %}
+            Ни одного рецепта не найдено!
+        {% endfor %}
+    </ul>
+{% endblock %}

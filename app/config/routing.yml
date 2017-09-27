@@ -1,0 +1,11 @@
+app:
+    resource: '@AppBundle/Controller/'
+    type: annotation
+    
+#hello_index:
+#    path: /hello
+#    defaults: { _controller: AppBundle:Hello:index }
+#    
+#article_index:
+#    path: /article
+#    defaults: { _controller: AppBundle:Article:index }

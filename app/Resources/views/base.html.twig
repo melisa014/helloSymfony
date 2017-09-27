@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>{% block title %}HelloSymfony{% endblock %}</title>
+        {% block stylesheets %}{% endblock %}
+        <link rel="icon" type="image/x-icon" href="{{ asset('favicon.ico') }}" />
+    </head>
+    <body>
+        {% block body %}
+            <h2>Кулинарная книга</h2>
+            
+            <b>Шапка Текст Контакты</b><br><br>
+            
+            
+            {% autoescape %}{% block content %}{% endblock %}{% endautoescape %}
+            
+        {% endblock %}
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>
