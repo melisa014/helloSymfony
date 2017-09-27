@@ -1,3 +1,6 @@
+/nbproject/*
+.gitignore
+
 /.web-server-pid
 /app/config/parameters.yml
 /build/
