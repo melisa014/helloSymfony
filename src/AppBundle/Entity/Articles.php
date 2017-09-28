@@ -2,57 +2,66 @@
 
 namespace AppBundle\Entity;
 
-use DateTime;
 use Doctrine\ORM\Mapping as ORM;
+use DateTime;
 
 /**
- * Класс сущности Статьи для Кулинарной книги
- * 
+ * Articles
+ *
+ * @ORM\Table(name="articles", indexes={@ORM\Index(name="IDX_BFDD3168A76ED395", columns={"user_id"})})
  * @ORM\Entity
- * @ORM\Table(name="articles")
  */
-class Articles {
-
+class Articles
+{
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\SequenceGenerator(sequenceName="articles_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
-    
+
     /**
-     * @ORM\Column(type="string")
+     * @var string
+     *
+     * @ORM\Column(name="name", type="string", length=255, nullable=false)
      */
     private $name;
 
     /**
-     * @ORM\Column(type="string") 
+     * @var string
+     *
+     * @ORM\Column(name="content", type="text", nullable=false)
      */
     private $content;
-    
+
     /**
-     * @ORM\Column(type="datetime") 
+     * @var \DateTime
+     *
+     * @ORM\Column(name="date", type="datetime", nullable=true)
      */
     private $date;
-    
+
     /**
-     * Автор статьи
+     * @var string
      *
-     * @ORM\Column(type="string")
+     * @ORM\Column(name="author", type="string", length=35, nullable=false)
      */
     private $author;
-    
+
     /**
-     * Внешний ключ для связи с User. Many Articles have One User.
-     * 
-     * @ORM\ManyToOne(targetEntity="User", inversedBy="id", fetch="EAGER")
-     * @ORM\Column(name="user_id")
+     * @var \Users
      *
-     * @var User
+     * @ORM\ManyToOne(targetEntity="Users")
+     * @ORM\JoinColumns({
+     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * })
      */
     private $user;
     
-    /**
+        /**
      * Получить id
      * 
      * @return int
@@ -161,9 +170,9 @@ class Articles {
     /**
      * Получить связь с таблицой авторов
      * 
-     * @return 
+     * @return Users
      */
-    public function getUser()
+    public function getUser():Users
     {
         return $this->user;
     }
@@ -171,15 +180,16 @@ class Articles {
     /**
      * Установить связь с таблицей авторов
      * 
-     * @param User $user
+     * @param Users $user
      * 
      * @return self
      */
-    public function setUser(User $user): self
+    public function setUser(Users $user): self
     {
         $this->user = $user;
         
         return $this;
     }
-    
+
 }
+

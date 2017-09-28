@@ -3,7 +3,6 @@
 namespace AppBundle\Controller;
 
 use AppBundle\Entity\Articles;
-use AppBundle\Entity\User;
 use DateTime;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -31,16 +30,6 @@ class ArticleController extends Controller
                 ->getRepository(Articles::class)
                 ->findAll();
         
-//        $query = 'SELECT * FROM articles';
-//        $pdo = new \PDO("pgsql:dbname=hello;host=127.0.0.1", "hellosymfony", "qwerty");
-//        $pdo_articles = $pdo->prepare($query);
-//        $result = $pdo_articles->execute();
-//        
-//        echo "<pre>";
-//        print_r($result);
-//        echo "</pre>";
-//        die();
-        
         $pageTitle = 'Архив';
         
         return $this->render('article/index.html.twig', [
@@ -56,7 +45,7 @@ class ArticleController extends Controller
      * 
      * @return Response
      */
-    public function viewAction(int $entityId = 2): Response
+    public function viewAction(int $entityId = 11): Response
     {
         $entity = $this->getDoctrine()
                 ->getRepository(Articles::class)
@@ -67,13 +56,7 @@ class ArticleController extends Controller
                 'Сущность с таким id не найдена : '.$entityId
             );
         }
-        
-//        var_dump($entity);
-//        die('123');
-        
-//        $this->render();
 
-        // ... do something, like pass the $product object into a template
         return new Response(
             'Нужный рецепт: '. $entity->getName()
         );
@@ -88,39 +71,32 @@ class ArticleController extends Controller
      */
     public function createAction(): Response
     {
-        // you can fetch the EntityManager via $this->getDoctrine()
-        // or you can add an argument to your action: createAction(EntityManagerInterface $em)
-//        $em = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
 
-//        $article = new Articles();
-//        $article->setName('Яблочный пирог');
-//        $article->setContent('Смешать всё, что есть, добавить яблоки');
-//        
-//        $article->setDate(new DateTime('now'));
-//        $article->setAuthor('шеф-повар Чарли');
+        $article = new Articles();
+        $article->setName('Яблочный пирог');
+        $article->setContent('Смешать всё, что есть, добавить яблоки');
         
-        
-        
+        $article->setDate(new DateTime('now'));
+        $article->setAuthor('шеф-повар Чарли');
         
         $user = $this->getDoctrine()
                 ->getRepository(Articles::class)
                 ->find(11)
                 ->getUser();
         
-        var_dump($user);
-        die('123');
-        
+//        var_dump(get_class($user));
+//        die('1234');
         
         $article->setUser($user);
 
-        // tells Doctrine you want to (eventually) save the Product (no queries yet)
         $em->persist($article);
 
-        // actually executes the queries (i.e. the INSERT query)
         $em->flush();
         
         return new Response('Сохранён новый объект с id = '.$article->getId());
     }
+
     /**
      * Редактирование статьи
      * 
@@ -147,7 +123,6 @@ class ArticleController extends Controller
         $em->flush();
 
         return $this->redirectToRoute('article_index');
-//        return $this->redirect('http://127.0.0.1:8000/article');
     }
 
     /**
@@ -157,7 +132,7 @@ class ArticleController extends Controller
      * 
      * @return Response
      */
-    public function deleteAction(int $entityId = 8): Response
+    public function deleteAction(int $entityId = 12): Response
     {
         $em = $this->getDoctrine()->getManager();
         $entity = $em->getRepository(Articles::class)->find($entityId);
@@ -183,15 +158,8 @@ class ArticleController extends Controller
     {
         $request = Request::createFromGlobals();
 
-//        echo "<pre>";
-//        print_r($request);
-//        echo "</pre>";
-//        die('123');
-        
-        // the URI being requested (e.g. /about) minus any query parameters
         echo $request->getPathInfo();
 
-        // retrieve $_GET and $_POST variables respectively
         $request->query->get('id');
         $request->request->get('category', 'default category');
         

@@ -5,27 +5,34 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Класс сущности Пользователи сайта
+ * Users
+ *
+ * @ORM\Table(name="users", uniqueConstraints={@ORM\UniqueConstraint(name="login", columns={"username"})})
  * @ORM\Entity
- * @ORM\Table(name="users")
  */
-class User {
-
+class Users
+{
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\Column(type="integer")
-     * @ORM\GeneratedValue
-     * @ORM\OneToMany(targetEntity="Articles", mappedBy="user_id", fetch="EAGER")
+     * @ORM\GeneratedValue(strategy="SEQUENCE")
+     * @ORM\SequenceGenerator(sequenceName="users_id_seq", allocationSize=1, initialValue=1)
      */
     private $id;
-    
+
     /**
-     * @ORM\Column(type="string")
+     * @var string
+     *
+     * @ORM\Column(name="username", type="string", length=35, nullable=false)
      */
     private $username;
 
     /**
-     * @ORM\Column(type="string")
+     * @var string
+     *
+     * @ORM\Column(name="email", type="string", length=35, nullable=true)
      */
     private $email;
     
@@ -86,5 +93,7 @@ class User {
         
         return $this;
     }
-    
+
+
 }
+
