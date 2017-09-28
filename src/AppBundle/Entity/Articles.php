@@ -38,7 +38,7 @@ class Articles
     private $content;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      *
      * @ORM\Column(name="date", type="datetime", nullable=true)
      */
