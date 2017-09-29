@@ -70,10 +70,11 @@ Enjoy!
 [11]: https://symfony.com/doc/3.3/logging.html
 [13]: https://symfony.com/doc/current/bundles/SensioGeneratorBundle/index.html
 [14]: https://symfony.com/doc/current/setup/built_in_web_server.html
+
 # helloSymfony
+-----------
 
-
-Как развернуть проект:
+# Как развернуть проект:
 
 1) База данных.
 Используется PostgreSQL. Для работы необходимо установить ракеты pgsql и pdo_pgsql.
