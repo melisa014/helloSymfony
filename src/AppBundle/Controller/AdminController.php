@@ -13,12 +13,14 @@ use Symfony\Component\HttpFoundation\Response;
  * 
  * @Route("user")
  */
-class UserController extends Controller
+class AdminController extends Controller
 {
     /**
+     * Корректировака данных пользователя
+     * 
      * @Route("/")
      */
-    public function createAction()
+    public function updateAction()
     {
         $userManager = $this->get('fos_user.user_manager');
         	
