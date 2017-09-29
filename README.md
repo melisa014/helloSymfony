@@ -72,4 +72,14 @@ Enjoy!
 [14]: https://symfony.com/doc/current/setup/built_in_web_server.html
 # helloSymfony
 
-111
+
+Как развернуть проект:
+
+1) База данных.
+Используется PostgreSQL. Для работы необходимо установить ракеты pgsql и pdo_pgsql.
+
+2) Подключаем зависимости с помощью composer
+
+3) Редактируем настройки подключения к БД и разворачиваем схему:
+   Как настроить: http://fkn.ktu10.com/?q=node/9469
+   Как запустить автоматическую генерацию таблиц в БД: php bin/console doctrine:schema:update --force
