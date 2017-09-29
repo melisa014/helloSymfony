@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="fos_user")
+ * @ORM\Table(name="user")
  */
 class User extends BaseUser
 {
@@ -32,15 +32,15 @@ class User extends BaseUser
     protected $address;
     
     /**
-     * @var int
+     * @var srting
      * 
-     * @ORM\Column(type="integer", name="mobile_number")
+     * @ORM\Column(type="string", name="mobile_number")
      * 
      * @Assert\Length( 
-     *      min = 11,
-     *      max = 11,
-     *      minMessage = "Номер мобильного должен содержать 11 цифр",
-     *      maxMessage = "Номер мобильного должен содержать 11 цифр"
+     *      min = 12,
+     *      max = 12,
+     *      minMessage = "Введите номер в формате +79991234567",
+     *      maxMessage = "Введите номер в формате +79991234567"
      * )
      * @Assert\NotBlank()
      */
@@ -83,7 +83,7 @@ class User extends BaseUser
     }
     
     /**
-     * @param int $mobileNumber
+     * @param string $mobileNumber
      * 
      * @return self
      */
