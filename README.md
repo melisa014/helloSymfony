@@ -5,11 +5,13 @@
 
 2) Подключаем зависимости с помощью composer
 
-3) Редактируем настройки подключения к БД и разворачиваем схему:
+3) Создаём виртуальный хост в соответствии с официальной документацией Symfony: symfony.com/doc/current/setup/web_server_configuration.html
+
+4) Редактируем настройки подключения к БД и разворачиваем схему:
    Как настроить: http://fkn.ktu10.com/?q=node/9469
    Как запустить автоматическую генерацию таблиц в БД: 'php bin/console doctrine:schema:update --force'
 
-4) Главная страница находится по адресу http://localhost/article/
+5) Главная страница находится по адресу http://localhost/article/
 
 Symfony Standard Edition
 ========================
