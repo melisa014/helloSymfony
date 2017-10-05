@@ -55,7 +55,7 @@ class User extends BaseUser
     }
     
     /**
-     * @return 
+     * @return string
      */
     public function getAddress()
     {
@@ -75,7 +75,7 @@ class User extends BaseUser
     }
     
     /**
-     * @return 
+     * @return string
      */
     public function getMobileNumber()
     {
