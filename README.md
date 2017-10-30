@@ -1,15 +1,19 @@
 # helloSymfony Как развернуть проект:
 
 1) База данных.
-Используется PostgreSQL. Для работы необходимо установить ракеты pgsql и pdo_pgsql.
+Используется PostgreSQL. Для работы необходимо установить postgresql, а также пакеты php: pgsql и pdo_pgsql.
 
-2) Подключаем зависимости с помощью composer
+2) Подключаем зависимости с помощью composer и создаём конфигурационный файл parameters.yml, как указано в Официальной документации Symfony: https://symfony.com/doc/current/setup.html#installing-an-existing-symfony-application
+   
+3) Создаём виртуальный хост в соответствии с официальной документацией Symfony: symfony.com/doc/current/setup/web_server_configuration.html
+   
+4) Заходим на http://myLocalhostName/config.php и следуем увиденным рекомендациям, если необходимо делаем поправки.
 
-3) Редактируем настройки подключения к БД и разворачиваем схему:
+5) Редактируем настройки подключения к БД и разворачиваем схему:
    Как настроить: http://fkn.ktu10.com/?q=node/9469
-   Как запустить автоматическую генерацию таблиц в БД: 'php bin/console doctrine:schema:update --force'
+   Как запустить автоматическую генерацию таблиц в БД: `php bin/console doctrine:schema:update --force`
 
-4) Главная страница находится по адресу http://localhost/article/
+6) Главная страница находится по адресу http://localhost/article/
 
 Symfony Standard Edition
 ========================

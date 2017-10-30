@@ -26,6 +26,7 @@ class ArticleController extends Controller
      */
     public function indexAction(): Response
     {
+//        die('123');
         $articles = $this->getDoctrine()
                 ->getRepository(Articles::class)
                 ->findAll();
