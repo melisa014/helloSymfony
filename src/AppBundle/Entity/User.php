@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="user")
+ * @ORM\Table(name="`user`")
  */
 class User extends BaseUser
 {
@@ -71,7 +71,7 @@ class User extends BaseUser
     {
         $this->address = $address;
         
-        return $this->address;
+        return $this;
     }
     
     /**
@@ -91,7 +91,7 @@ class User extends BaseUser
     {
         $this->mobileNumber = $mobileNumber;
         
-        return $this->mobileNumber;
+        return $this;
     }
     
 }

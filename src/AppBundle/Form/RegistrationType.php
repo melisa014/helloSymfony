@@ -16,29 +16,28 @@ class RegistrationType extends AbstractType
         $builder->add('address', TextType::class, [
             'label' => 'Адрес дома',
             'attr'=> [
-                'placeholder' => 'Воронеж, Рабочий проспект, д.100'
-                ]
-            ]);
+                'placeholder' => 'Воронеж, Рабочий проспект, д.100',
+            ],
+        ]);
         $builder->add('mobileNumber', TextType::class, [
             'label' => 'Мобильный телефон',
             'attr'=> [
-                'placeholder' => '+7 (999) 123-45-67'
-                ]
+                'placeholder' => '+7 (999) 123-45-67',
+            ],
         ]);
         $builder->add('username', TextType::class, [
             'label' => 'ФИО',
             'attr'=> [
-                'placeholder' => 'Иванов Иван Иванович'
-                ]
+                'placeholder' => 'Иванов Иван Иванович',
+            ],
         ]);
         $builder->add('code', TextType::class, [
             'label' => 'Код из СМС',
             'attr'=> [
                 'placeholder' => '9876'
-                ],
-            'mapped' => false
+            ],
+            'mapped' => false,
         ]);
-        
         
         $builder->remove('email');
         $builder->remove('plainPassword');

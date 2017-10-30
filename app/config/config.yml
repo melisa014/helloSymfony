@@ -83,7 +83,7 @@ swiftmailer:
 
 # FOSUserBundls Configuration
 fos_user:
-    # other valid values are 'mongodb', 'couchdb' and 'propel'
+#    # other valid values are 'mongodb', 'couchdb' and 'propel'
     db_driver: orm 
     firewall_name: main
     user_class: AppBundle\Entity\User
@@ -93,40 +93,42 @@ fos_user:
     registration:
         form:
             type: AppBundle\Form\RegistrationType
+            validation_groups:  [Registration, Default]
+#            template: 'app\Resources\user\register.html.twig'
 
-fos_user:
-    db_driver: orm
-    firewall_name: main
-    user_class: AppBundle\Entity\User
-    use_listener:           true
-    use_flash_notifications: true
-    use_authentication_listener: true
-    use_username_form_type: true
+#fos_user:
+#    db_driver: orm
+#    firewall_name: main
+#    user_class: AppBundle\Entity\User
+#    use_listener:           true
+#    use_flash_notifications: true
+#    use_authentication_listener: true
+#    use_username_form_type: true
     # change it to the name of your entity/document manager if you don't want to use the default one.
-    model_manager_name:     null  
-    from_email:
-        address:        webmaster@example.com
-        sender_name:    webmaster
-    profile:
-        form:
-            # or 'fos_user_profile' on Symfony < 2.8
-            type:               FOS\UserBundle\Form\Type\ProfileFormType 
-            name:               fos_user_profile_form
-            validation_groups:  [Profile, Default]
-    change_password:
-        form:
-            # or 'fos_user_change_password' on Symfony < 2.8
-            type:               FOS\UserBundle\Form\Type\ChangePasswordFormType 
-            name:               fos_user_change_password_form
-            validation_groups:  [ChangePassword, Default]
-    registration:
-        form:
+#    model_manager_name:     null  
+#    from_email:
+#        address:        webmaster@example.com
+#        sender_name:    webmaster
+#    profile:
+#        form:
+#            # or 'fos_user_profile' on Symfony < 2.8
+#            type:               Acme\UserBundle\Form\RegistrationType 
+#            name:               fos_user_profile_form
+#            validation_groups:  [Profile, Default]
+#    change_password:
+#        form:
+#            # or 'fos_user_change_password' on Symfony < 2.8
+#            type:               Acme\UserBundle\Form\RegistrationType 
+#            name:               fos_user_change_password_form
+#            validation_groups:  [ChangePassword, Default]
+#    registration:
+#        form:
              # or 'fos_user_registration' on Symfony < 2.8
 #            type:               FOS\UserBundle\Form\Type\RegistrationFormType
-            type:               AppBundle\Form\RegistrationType
+#            type:               AppBundle\Form\RegistrationType
 #            name:               fos_user_registration_form
 #            validation_groups:  [Registration, Default]
-            template: 'app\Resources\user\register.html.twig'
+#            template: 'app\Resources\user\register.html.twig'
 #        confirmation:
             # Use this node only if you don't want the global email address for the confirmation email
 #            from_email: 
@@ -135,32 +137,32 @@ fos_user:
             # change to true for required email confirmation
 #            enabled:    false 
 #            template:   '@FOSUser/Registration/email.txt.twig'
-    resetting:
-        # Value in seconds, logic will use as hours
-        retry_ttl: 7200 
-        token_ttl: 86400
-        email:
-            # Use this node only if you don't want the global email address for the resetting email
-            from_email: 
-                address:        ...
-                sender_name:    ...
-            template:   '@FOSUser/Resetting/email.txt.twig'
-        form:
-            # or 'fos_user_resetting' on Symfony < 2.8
-            type:               FOS\UserBundle\Form\Type\ResettingFormType 
-            name:               fos_user_resetting_form
-            validation_groups:  [ResetPassword, Default]
-    service:
-        mailer:                 fos_user.mailer.default
-        email_canonicalizer:    fos_user.util.canonicalizer.default
-        username_canonicalizer: fos_user.util.canonicalizer.default
-        token_generator:        fos_user.util.token_generator.default
-        user_manager:           fos_user.user_manager.default
-    group:
-        group_class:    ~ # Required when using groups
-        group_manager:  fos_user.group_manager.default
-        form:
-            # or 'fos_user_group' on Symfony < 2.8
-            type:               FOS\UserBundle\Form\Type\GroupFormType 
-            name:               fos_user_group_form
-            validation_groups:  [Registration, Default]
+#    resetting:
+#        # Value in seconds, logic will use as hours
+#        retry_ttl: 7200 
+#        token_ttl: 86400
+#        email:
+#            # Use this node only if you don't want the global email address for the resetting email
+#            from_email: 
+#                address:        ...
+#                sender_name:    ...
+#            template:   '@FOSUser/Resetting/email.txt.twig'
+#        form:
+#            # or 'fos_user_resetting' on Symfony < 2.8
+#            type:               FOS\UserBundle\Form\Type\ResettingFormType 
+#            name:               fos_user_resetting_form
+#            validation_groups:  [ResetPassword, Default]
+#    service:
+#        mailer:                 fos_user.mailer.default
+#        email_canonicalizer:    fos_user.util.canonicalizer.default
+#        username_canonicalizer: fos_user.util.canonicalizer.default
+#        token_generator:        fos_user.util.token_generator.default
+#        user_manager:           fos_user.user_manager.default
+#    group:
+#        group_class:    ~ # Required when using groups
+#        group_manager:  fos_user.group_manager.default
+#        form:
+#            # or 'fos_user_group' on Symfony < 2.8
+#            type:               FOS\UserBundle\Form\Type\GroupFormType 
+#            name:               fos_user_group_form
+#            validation_groups:  [Registration, Default]
