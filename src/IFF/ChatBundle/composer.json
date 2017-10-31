@@ -1,0 +1,29 @@
+{
+    "name": "it-for-free/chat-bundle",
+    "type": "symfony-bundle",
+    "description": "Symfony IFFChatBundle. Includs chat to your application",
+    "keywords": ["php", "itforfree", "symfony", "chat", "bundle"],
+    "homepage": "http://chat-bundle.github.com",
+    "authors": [
+        {
+            "name": "It For Free",
+            "homepage": "http://fkn.ktu10.com/node/7716"
+        }
+    ],
+
+    "autoload": {
+        "psr-4": {
+            "ItForFree\\ChatBundle\\": ""
+        }
+    },
+    "require": {
+        "components/jquery": "dev-master"
+    },
+    "repositories": [
+        {
+           "type": "vcs",
+           "url": "https://github.com/components/jquery"
+        }
+    ]
+}
+    

@@ -1,3 +1,7 @@
+iff_chat:
+    resource: "@IFFChatBundle/Resources/config/routing.yml"
+    prefix:   /chat
+
 app:
     resource: '@AppBundle/Controller/'
     type: annotation

@@ -4,7 +4,7 @@
 Используется PostgreSQL. Для работы необходимо установить postgresql, а также пакеты php: pgsql и pdo_pgsql.
 
 2) Подключаем зависимости с помощью composer и создаём конфигурационный файл parameters.yml, как указано в Официальной документации Symfony: https://symfony.com/doc/current/setup.html#installing-an-existing-symfony-application
-   
+ 
 3) Создаём виртуальный хост в соответствии с официальной документацией Symfony: symfony.com/doc/current/setup/web_server_configuration.html
    
 4) Заходим на http://myLocalhostName/config.php и следуем увиденным рекомендациям, если необходимо делаем поправки.

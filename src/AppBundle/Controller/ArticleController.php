@@ -81,15 +81,15 @@ class ArticleController extends Controller
         $article->setDate(new DateTime('now'));
         $article->setAuthor('шеф-повар Чарли');
         
-        $user = $this->getDoctrine()
-                ->getRepository(Articles::class)
-                ->find(11)
-                ->getUser();
+//        $user = $this->getDoctrine()
+//                ->getRepository(Articles::class)
+//                ->find(11)
+//                ->getUser();
         
 //        var_dump(get_class($user));
 //        die('1234');
         
-        $article->setUser($user);
+//        $article->setUser($user);
 
         $em->persist($article);
 

@@ -23,11 +23,10 @@ class AdminController extends Controller
     public function updateAction()
     {
         $userManager = $this->get('fos_user.user_manager');
-        	
         $user = $userManager->createUser();
         
-        var_dump(get_class($user));
-        die('1234');
+//        var_dump(get_class($user));
+//        die('1234');
         
 
     }

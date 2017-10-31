@@ -23,15 +23,6 @@ class User extends BaseUser
     protected $id;
     
     /**
-     * @var string
-     * 
-     * @ORM\Column(type="string")
-     * 
-     * @Assert\NotBlank()
-     */
-    protected $address;
-    
-    /**
      * @var srting
      * 
      * @ORM\Column(type="string", name="mobile_number")
@@ -47,31 +38,23 @@ class User extends BaseUser
     protected $mobileNumber;
     
     /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="Message", mappedBy="user")
+     */
+    protected $messages;
+
+     public function __construct()
+    {
+        $this->messages = new ArrayCollection();
+    }
+
+    /**
      * @return int
      */
     public function getId(): int
     {
         return $this->id;
-    }
-    
-    /**
-     * @return string
-     */
-    public function getAddress()
-    {
-        return $this->address;
-    }
-    
-    /**
-     * @param string $address
-     * 
-     * @return self
-     */
-    public function setAddress($address): self
-    {
-        $this->address = $address;
-        
-        return $this;
     }
     
     /**
@@ -92,6 +75,45 @@ class User extends BaseUser
         $this->mobileNumber = $mobileNumber;
         
         return $this;
+    }
+    
+    /**
+     * @param Message $message
+     * 
+     * @return self
+     */
+    public function addMessage(Message $message): self
+    {
+        if (!$this->messages->contains($message)) { 
+            $user->setHouse($this); 
+            $this->messages->add($message); 
+        }
+
+        return $this;
+    }
+            
+    /**
+     * @param Message $message
+     * 
+     * @return self
+     */
+    public function removeMessage(Message $message): self
+    {
+        if ($this->messages->contains($message)) { 
+            $this->messages->removeElement($message); 
+        }
+
+        return $this;
+    }
+    
+    /**
+     * Возвращает список всех юзеров в коллекции
+     * 
+     * @return ArrayCollection
+     */
+    public function getMessages(): ArrayCollection
+    {
+        return $this->messages; 
     }
     
 }
