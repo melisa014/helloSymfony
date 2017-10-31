@@ -4,6 +4,7 @@ namespace IFF\ChatBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
+use AppBundle\Entity\User;
 
 /**
  * @ORM\Table(name="message")
@@ -45,7 +46,7 @@ class Message
     /**
      * @var User
      *
-     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
      */
     private $user;

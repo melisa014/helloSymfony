@@ -3,6 +3,8 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use IFF\ChatBundle\Entity\Message;
 use FOS\UserBundle\Model\User as BaseUser;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -27,12 +29,6 @@ class User extends BaseUser
      * 
      * @ORM\Column(type="string", name="mobile_number")
      * 
-     * @Assert\Length( 
-     *      min = 12,
-     *      max = 12,
-     *      minMessage = "Введите номер в формате +79991234567",
-     *      maxMessage = "Введите номер в формате +79991234567"
-     * )
      * @Assert\NotBlank()
      */
     protected $mobileNumber;
@@ -40,7 +36,7 @@ class User extends BaseUser
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="Message", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="IFF\ChatBundle\Entity\Message", mappedBy="user")
      */
     protected $messages;
 

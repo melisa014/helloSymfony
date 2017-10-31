@@ -8,7 +8,7 @@ use DateTime;
 /**
  * Articles
  *
- * @ORM\Table(name="articles", indexes={@ORM\Index(name="IDX_BFDD3168A76ED395", columns={"user_id"})})
+ * @ORM\Table(name="articles")
  * @ORM\Entity
  */
 class Articles
@@ -52,16 +52,6 @@ class Articles
     private $author;
 
     /**
-     * @var \Users
-     *
-     * @ORM\ManyToOne(targetEntity="Users")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="user_id", referencedColumnName="id")
-     * })
-     */
-    private $user;
-    
-        /**
      * Получить id
      * 
      * @return int
@@ -167,29 +157,5 @@ class Articles
         return $this;
     }
     
-    /**
-     * Получить связь с таблицой авторов
-     * 
-     * @return Users
-     */
-    public function getUser():Users
-    {
-        return $this->user;
-    }
-    
-    /**
-     * Установить связь с таблицей авторов
-     * 
-     * @param Users $user
-     * 
-     * @return self
-     */
-    public function setUser(Users $user): self
-    {
-        $this->user = $user;
-        
-        return $this;
-    }
-
 }
 
