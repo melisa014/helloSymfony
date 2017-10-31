@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    
+    Hello World!
+    <div class='friends-list-conteiner'>
+        <div>Ваши друзья</div>
+        <div>
+            <table>
+                <tr>
+                  <td>Друг 1</td>
+                  <td>Последнее сообщение</td>
+                </tr>
+                <tr>
+                  <td>Друг 2</td>
+                  <td>Последнее сообщение</td>
+                </tr>
+                <tr>
+                  <td>Друг 3</td>
+                  <td>Последнее сообщение</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    
+    <div class='chat-area-conteiner'>
+        <div>Область чата</div>
+        <div class='chat-area'>
+            <table>
+                <tr>
+                  <td>Сообщение юзера</td>
+                  <td>Сообщение админа</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class='form-messaging-conteiner'>
+        {% if error %}
+            <div>{{ error }}</div>
+        {% endif %}
+        {{ form_start(form, {'method': 'post'}) }}
+            <div>{{ form_widget(form.content) }}</div>
+            <div>{{ form_widget(form.submit) }}</div>
+
+        {{ form_end(form) }}
+    </div>
+
+{% endblock content%}
