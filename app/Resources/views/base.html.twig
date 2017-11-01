@@ -3,26 +3,13 @@
     <head>
         <head>
         <meta charset="UTF-8">
-{#        <title>{% block title %}tsg{% endblock %}</title>#}
-        <title>tsg</title>
+        <title>Chat-Chat</title>
         <link href="{{ asset('css/chat.css') }}" rel="stylesheet" />
-        <link rel="icon" type="image/png/fa" href=".././src/images/png/favicon.png" />
-        <meta property="og:url" content="http://www.your-domain.com/your-page.html"/>
-        <meta property="og:type" content="website"/>
-        <meta property="og:title" content="Your Website Title"/>
-        <meta property="og:description" content="Your description"/>
-        <meta property="og:image" content="http://www.your-domain.com/path/image.jpg"/>
-        <link rel="icon" type="image/vnd.microsoft.icon" href="../index.php"/>
-        <meta name="viewport" content="width=device-width,initial-scale=1">
-        <meta http-equiv="x-ua-compatible" content="ie=edge">
-        <!--    <link href="https://fonts.googleapis.com/css?family=Scada:400,700&amp;subset=cyrillic" rel="stylesheet">-->
-        <link href="https://fonts.googleapis.com/css?family=Fira+Sans" rel="stylesheet">
     </head>
     </head>
     <body>
         {% block body %}
             <h2>Название сайта</h2>
-            
             <b>Шапка Текст Контакты</b><br><br>
             
             {% autoescape %}{% block content %}{% endblock %}{% endautoescape %}
@@ -30,6 +17,7 @@
         {% endblock %}
         {% block javascripts %}
             <script src="/js/main.js"></script>
+            <script src="/js/chatMessages.js"></script>
         {% endblock %}
     </body>
 </html>

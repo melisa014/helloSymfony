@@ -92,4 +92,4 @@ fos_user:
     registration:
         form:
             type: AppBundle\Form\RegistrationType
-            validation_groups:  [Registration, Default]
+            validation_groups:  [app_registration]

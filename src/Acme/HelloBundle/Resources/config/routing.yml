@@ -1,3 +1,0 @@
-acme_hello_homepage:
-    path:     /
-    defaults: { _controller: AcmeHelloBundle:Default:index }

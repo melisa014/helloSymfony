@@ -7,7 +7,7 @@ use IFF\ChatBundle\Form\ChatType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use FOS\UserBundle\Model\UserManagerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @Route("/chat")
@@ -21,19 +21,56 @@ class ChatController extends Controller
      */
     public function indexAction(): Response
     {
-        /** @var $userManager UserManagerInterface */
-        $userManager = $this->get('fos_user.user_manager');
+        $errors = [
+            'anyUsers' => '',
+            'sendMessage' => '',
+            'showMessages' => '',
+        ];
         
-        $user = $userManager->createUser();
-        $user->setEnabled(true);
+        $em = $this->getDoctrine()->getManager();
+        $users = $em->getRepository(User::class)->findAll();
         
-        $data['error'] = '';
+//        echo "<pre>";
+//        print_r($users[0]);
+//        echo "<br>";
+//        print_r($users[1]);
+//        echo "</pre>";
+
+        if (empty($users)) {
+            $errors['anyUsers'] = 'У Вас пока нет друзей';
+        }
         
         $form = $this->createForm(ChatType::class);
         
         return $this->render('IFFChatBundle:Chat:index.html.twig', [
             'form' => $form->createView(),
-            'error' => $data['error'],
+            'error' => $errors,
+            'users' => $users,
         ]);
+    }
+    
+    public function saveSendedMessages()
+    {
+        
+    }
+    
+    public function loadMessages()
+    {
+        $errors['showMessages'] = '';
+        
+        $messages = [];
+        
+        
+        
+        
+        
+        if (empty($messages)) {
+            $errors['showMessages'] = 'Вы ещё не переписывались с этим пользователем';
+        }
+        
+        return JsonResponse(json_encode([
+            'messages' => $messages,
+            'error' => $errors,
+        ]));
     }
 }

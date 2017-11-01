@@ -13,12 +13,6 @@ class RegistrationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('address', TextType::class, [
-            'label' => 'Адрес дома',
-            'attr'=> [
-                'placeholder' => 'Воронеж, Рабочий проспект, д.100',
-            ],
-        ]);
         $builder->add('mobileNumber', TextType::class, [
             'label' => 'Мобильный телефон',
             'attr'=> [

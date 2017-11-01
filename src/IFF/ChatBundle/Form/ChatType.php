@@ -16,14 +16,16 @@ class ChatType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder->add('content', TextType::class, [
-                'label' => 'Ваши друзья)',
                 'attr'=> [
                     'placeholder' => 'Введите сообщение...',
-                    'class' => '',
+                    'class' => 'chat-content',
                 ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Отправить',
+                'attr'=> [
+                    'class' => 'chat-submit',
+                ],
             ]);;
     }
     

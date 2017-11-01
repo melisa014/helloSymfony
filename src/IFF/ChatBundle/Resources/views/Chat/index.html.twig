@@ -6,26 +6,26 @@
     <div class='friends-list-conteiner'>
         <div>Ваши друзья</div>
         <div>
+            {% if error.anyUsers %}
+                <div>{{ error.anyUsers }}</div>
+            {% endif %}
             <table>
-                <tr>
-                  <td>Друг 1</td>
-                  <td>Последнее сообщение</td>
-                </tr>
-                <tr>
-                  <td>Друг 2</td>
-                  <td>Последнее сообщение</td>
-                </tr>
-                <tr>
-                  <td>Друг 3</td>
-                  <td>Последнее сообщение</td>
-                </tr>
+                {% for user in users %}
+                    <tr id="{{ user.id }}">
+                        <td>{{ user.username }}</td>
+                        <td>Текст сообщения</td>
+                    </tr>
+                {% endfor %}
             </table>
         </div>
     </div>
     
     <div class='chat-area-conteiner'>
         <div>Область чата</div>
-        <div class='chat-area'>
+        <div class='chat-area' data-user="nobody">
+            {% if error.showMessages %}
+                <div>{{ error.showMessages }}</div>
+            {% endif %}
             <table>
                 <tr>
                   <td>Сообщение юзера</td>
@@ -36,8 +36,8 @@
     </div>
 
     <div class='form-messaging-conteiner'>
-        {% if error %}
-            <div>{{ error }}</div>
+        {% if error.sendMessage %}
+            <div>{{ error.sendMessage }}</div>
         {% endif %}
         {{ form_start(form, {'method': 'post'}) }}
             <div>{{ form_widget(form.content) }}</div>

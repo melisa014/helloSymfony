@@ -42,7 +42,13 @@ class User extends BaseUser
 
      public function __construct()
     {
-        $this->messages = new ArrayCollection();
+        parent::__construct();
+        
+        $this->messages = new ArrayCollection(); 
+        
+        $this->email = $this->email ? $this->email : $this->id;
+        $this->password = $this->password ? $this->password : '';
+        $this->plainPassword = $this->plainPassword ? $this->plainPassword : '';
     }
 
     /**

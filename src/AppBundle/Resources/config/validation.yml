@@ -1,0 +1,12 @@
+AppBundle\Entity\User:
+    properties:
+        username:
+            - NotBlank:  
+                groups: [app_registration]
+        mobileNumber:
+            - Regex:
+                pattern: '/^\+79\d{9}$/'
+                message: 'Номер телефона должен начинаться с +7 и должен быть записан без пробелов (например, +79991234567)'
+                groups: [app_registration]
+            - NotBlank: 
+                groups: [app_registration]
