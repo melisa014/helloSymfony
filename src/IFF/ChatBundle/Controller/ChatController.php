@@ -65,7 +65,7 @@ class ChatController extends Controller
         
         
         if (empty($messages)) {
-            $errors['showMessages'] = 'Вы ещё не переписывались с этим пользователем';
+            $errors['showMessages'] = 'Здесь ещё нет ни одного сообщения';
         }
         
         return JsonResponse(json_encode([

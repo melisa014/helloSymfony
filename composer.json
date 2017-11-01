@@ -36,6 +36,12 @@
         "sensio/generator-bundle": "^3.0",
         "symfony/phpunit-bridge": "^3.0"
     },
+    "repositories": [
+        {
+           "type": "vcs",
+           "url": "https://github.com/components/jquery"
+        }
+    ],
     "scripts": {
         "symfony-scripts": [
             "Incenteev\\ParameterHandler\\ScriptHandler::buildParameters",

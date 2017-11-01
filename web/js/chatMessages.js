@@ -1,10 +1,5 @@
-alert('first)');
-
 $(function(){
-    
-    alert('secound)');
-    
-    saveMessage();
+    saveMessages();
     chooseUser();
 });
 
@@ -48,13 +43,16 @@ function saveMessages()
 
 function chooseUser()
 {
-    $('div.friends-list-conteiner div table tbody tr td').on('click', function(){
-        
-        alert('third)');
-        
+    $('div.friends-list-conteiner tr').on('click', function(){
         var userId = $(this).attr('id');
+        console.log(userId);
+        
+        $('div.chat-area').css('background-color', 'red');
+        $('#area').css('background-color', 'red');
+        $('.chat-area').css('background-color', 'red');
+        
         $('.chat-area').attr('data-user', userId);
-        $('.chat-area').append('Здесь будет переписка с пользователем. Его id = ' + userId);
+        $('.chat-area').append('<div>Здесь будет переписка с пользователем. Его id = ' + userId + '</div>');
     });
 }
 

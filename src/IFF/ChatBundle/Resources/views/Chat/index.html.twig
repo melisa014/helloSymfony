@@ -4,7 +4,7 @@
     
     Hello World!
     <div class='friends-list-conteiner'>
-        <div>Ваши друзья</div>
+        <h3>Ваши друзья</h3>
         <div>
             {% if error.anyUsers %}
                 <div>{{ error.anyUsers }}</div>
@@ -21,8 +21,8 @@
     </div>
     
     <div class='chat-area-conteiner'>
-        <div>Область чата</div>
-        <div class='chat-area' data-user="nobody">
+        <h3>Область чата</h3>
+        <div class='chat-area' data-user="nobody" id="area">
             {% if error.showMessages %}
                 <div>{{ error.showMessages }}</div>
             {% endif %}
@@ -35,6 +35,7 @@
         </div>
     </div>
 
+    <hr>
     <div class='form-messaging-conteiner'>
         {% if error.sendMessage %}
             <div>{{ error.sendMessage }}</div>
