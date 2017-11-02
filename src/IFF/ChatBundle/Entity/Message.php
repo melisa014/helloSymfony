@@ -25,13 +25,6 @@ class Message
     /**
      * @var string
      *
-     * @ORM\Column(name="name", type="string", length=255)
-     */
-    private $name;
-
-    /**
-     * @var string
-     *
      * @ORM\Column(name="content", type="text")
      */
     private $content;
@@ -59,11 +52,47 @@ class Message
         return $this->id;
     }
     
-    
-    
-    
+    /**
+     * @return string
+     */
+    public function getContent(): string
+    {
+        return $this->content;
+    }
+
+    /**
+     * @param string $content
+     * 
+     * @return self
+     */
+    public function setContent(string $content): self
+    {
+        $this->content = $content;
+        
+        return $this;
+    }
     
     /**
+     * @return DateTime
+     */
+    public function getTimestamp(): DateTime
+    {
+        return $this->timestamp;
+    }
+    
+    /**
+     * @param DateTime $timestamp
+     * 
+     * @return self
+     */
+    public function setTimestamp(DateTime $timestamp): self
+    {
+        $this->timestamp = $timestamp;
+        
+        return $this;
+    }
+
+        /**
      * Узнать, какой пользователь написал сообщение
      * 
      * @return User

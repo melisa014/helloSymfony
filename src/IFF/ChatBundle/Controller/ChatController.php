@@ -61,7 +61,19 @@ class ChatController extends Controller
     public function saveMessagesAction(Request $request): JsonResponse
     {
         $toUser = $request->get('toUser');
-        $message = $request->get('message');
+        $content = $request->get('message');
+        
+        $fromUser = $this->getUser();
+                
+        $message = new Message();
+        $message->setContent($content);
+        $message->setTimestamp(new DateTime());
+        
+        $message->setUser($fromUser);
+        
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($message);
+        $em->flush();
         
         return new JsonResponse([
             'Юзер' => $toUser,

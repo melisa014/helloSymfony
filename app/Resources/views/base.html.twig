@@ -12,7 +12,16 @@
             <h2>Название сайта</h2>
             <b>Шапка Текст Контакты</b><br><br>
             
-            {% autoescape %}{% block content %}{% endblock %}{% endautoescape %}
+            {% autoescape %}
+                {% if app.user %}
+                    Приветствуем, {{ app.user.username }}
+                    <a href="/logout">Выход</a>
+                {%else %}
+                    Пользователь не зарегистрирован
+                {% endif %}
+                {% block content %}{% endblock %}
+                {% block fos_user_content %}{% endblock %}
+            {% endautoescape %}
             
         {% endblock %}
         {% block javascripts %}

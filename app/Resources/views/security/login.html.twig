@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block fos_user_content %}
+    
+    {% if error %}
+        <div>{{ error }}</div>
+    {% endif %}
+    
+     {{ form_start(form, {'method': 'post', 'action': path('login')}) }}
+     
+        {% if csrf_token %}
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token }}" />
+        {% endif %}
+        
+        <div class="main-text">Войти</div>
+        <div class="text-description-mobile-phone">Мобильный телефон</div>
+        <div class="link-input-container">
+            {{ form_widget(form.mobileNumber) }}
+            <a href="#" class="container-text-link">
+                <div  class="text-link">Отправить проверочный код</div>
+            </a>
+        </div>
+        <div class="line"></div>
+
+        <div class="text-description-password">Код из СМС</div>
+        {{ form_widget(form.code) }}
+
+        <input type="submit" id="_submit" name="submit" value="{{ 'Войти'|trans }}" class="enter-button"/>
+        
+    {{ form_end(form) }}
+    
+{% endblock fos_user_content %}
