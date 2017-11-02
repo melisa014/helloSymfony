@@ -3,8 +3,10 @@
 namespace IFF\ChatBundle\Controller;
 
 use AppBundle\Entity\User;
+use IFF\ChatBundle\Entity\Message;
 use IFF\ChatBundle\Form\ChatType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -49,18 +51,41 @@ class ChatController extends Controller
         ]);
     }
     
-    public function saveSendedMessages()
+    /**
+     * @Route("/saving")
+     * 
+     * @param Request $request
+     * 
+     * @return JsonResponse
+     */
+    public function saveMessagesAction(Request $request): JsonResponse
     {
+        $toUser = $request->get('toUser');
+        $message = $request->get('message');
         
+        return new JsonResponse([
+            'Юзер' => $toUser,
+            'Сообщение' => $message
+        ]);
     }
     
-    public function loadMessages()
+    /**
+     * @Route("/loading")
+     * 
+     * @param Request $request
+     * 
+     * @return JsonResponse
+     */
+    public function loadMessagesAction(Request $request): JsonResponse
     {
         $errors['showMessages'] = '';
         
         $messages = [];
         
-        
+        $em = $this->getDoctrine()->getManager();
+        $messages = $em->getRepository(Message::class)->findBy([
+            'user_id' => $data['user_id']
+        ]);
         
         
         
@@ -68,9 +93,17 @@ class ChatController extends Controller
             $errors['showMessages'] = 'Здесь ещё нет ни одного сообщения';
         }
         
-        return JsonResponse(json_encode([
+        return JsonResponse([
             'messages' => $messages,
             'error' => $errors,
-        ]));
+        ]);
+    }
+    
+    /**
+     * @Route("/test")
+     */
+    public function testAction()
+    {
+        return new Response("hihi!)");
     }
 }

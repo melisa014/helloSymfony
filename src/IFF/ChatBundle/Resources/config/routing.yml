@@ -1,3 +1,11 @@
-iff_chat_homepage:
-    path:     /
-    defaults: { _controller: IFFChatBundle:Chat:index }
+#iff_chat_homepage:
+#    path:     /
+#    defaults: { _controller: IFFChatBundle:Chat:index }
+#    
+#iff_chat_saving:
+#    path:     /saving
+#    defaults: { _controller: IFFChatBundle:Chat:saveMessages }
+#    
+#iff_chat_loading:
+#    path:     /loading
+#    defaults: { _controller: IFFChatBundle:Chat:loadMessages }

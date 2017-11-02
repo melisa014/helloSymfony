@@ -41,3 +41,32 @@ class AppKernel extends Kernel
     // ...
 }
 ```
+
+Step 3: Manage routing
+----------------------
+
+The easiest way to enable routing of bundle to your application is using annotations.
+Add this code in `config/routing.yml` file of your project:
+	
+```php
+iff_chat:
+    resource: "@IFFChatBundle/Controller/"
+    type: annotation
+```
+Use Symfony annotations to choose routes of actions:
+
+```php	
+/**
+ * @Route("/chat")
+ */
+class ChatController extends Controller
+{
+    /**
+     * @Route("/")
+     * 
+     * @return Response
+     */
+    public function indexAction(): Response
+    { ... }
+```
+

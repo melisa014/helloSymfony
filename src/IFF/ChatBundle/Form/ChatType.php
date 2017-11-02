@@ -18,14 +18,10 @@ class ChatType extends AbstractType
         $builder->add('content', TextType::class, [
                 'attr'=> [
                     'placeholder' => 'Введите сообщение...',
-                    'class' => 'chat-content',
                 ],
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Отправить',
-                'attr'=> [
-                    'class' => 'chat-submit',
-                ],
             ]);;
     }
     
