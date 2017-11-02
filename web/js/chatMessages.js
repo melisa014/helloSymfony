@@ -7,7 +7,7 @@ function saveMessages()
 {
     $('.chat-submit').on('click', function(){
         var message = $('.chat-content').val();
-        var user = 
+        var user = $('.chat-area').attr('data-user');
         $.ajax({
             type: 'post',
             data: {
@@ -45,16 +45,20 @@ function chooseUser()
 {
     $('div.friends-list-conteiner tr').on('click', function(){
         var userId = $(this).attr('id');
-        console.log(userId);
+        console.log('Id: ' + userId);
         
-        $('div.chat-area').css('background-color', 'red');
-        $('#area').css('background-color', 'red');
-        $('.chat-area').css('background-color', 'red');
-        
-        $('.chat-area').attr('data-user', userId);
-        $('.chat-area').append('<div>Здесь будет переписка с пользователем. Его id = ' + userId + '</div>');
+        $('div.chat-area').attr('data-user', userId);
+        console.log('data-user:' + $('div.chat-area').attr('data-user'));
     });
 }
 
+function clearUser()
+{
+    $(document).on('keydown', function(event){
+        if (event.keyCode === 27) {
+            $('div.chat-area').data('user', 'nobody');
+        }
+    });
+}
 
 

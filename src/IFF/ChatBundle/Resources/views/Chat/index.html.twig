@@ -2,7 +2,6 @@
 
 {% block content %}
     
-    Hello World!
     <div class='friends-list-conteiner'>
         <h3>Ваши друзья</h3>
         <div>
@@ -22,13 +21,17 @@
     
     <div class='chat-area-conteiner'>
         <h3>Область чата</h3>
-        <div class='chat-area' data-user="nobody" id="area">
+        <div class='chat-area' data-user="nobody">
             {% if error.showMessages %}
                 <div>{{ error.showMessages }}</div>
             {% endif %}
             <table>
                 <tr>
                   <td>Сообщение юзера</td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
                   <td>Сообщение админа</td>
                 </tr>
             </table>
