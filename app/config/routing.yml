@@ -1,6 +1,6 @@
-iff_chat:
-    resource: "@IFFChatBundle/Controller/"
-    type: annotation
+# подключаем роутинг IFFChatBundle
+imports:
+    resource: '@IFFChatBundle/Resources/config/routing.yml' 
 
 app:
     resource: '@AppBundle/Controller/'
@@ -10,10 +10,6 @@ fos_user_security:
     resource: "@AppBundle/Controller/"
     type: annotation
     
-#fos_user_register:
-#    resource: "@AppBundle/Controller/"
-#    type: annotation
-
 fos_user_profile:
     resource: "@FOSUserBundle/Resources/config/routing/profile.xml"
     prefix: /profile

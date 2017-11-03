@@ -69,24 +69,8 @@ class RegistrationController extends BaseController
 
                     $userManager->updateUser($user);
                     
-                    $houseAddress = $formData['address'];
-                    $house = $this->getDoctrine()
-                            ->getManager()
-                            ->getRepository(House::class)
-                            ->findOneBy(['address' => $houseAddress]);
-                    if (empty($house)) {
-                        $house = new House();
-                    }
-                    $house->addUser($user);
-                    $house->setAddress($houseAddress);
-
-                    $em = $this->getDoctrine()
-                            ->getManager();
-                    $em->persist($house);
-                    $em->flush();
-
                     if (null === ($response = $event->getResponse())) {
-                        $response = $this->redirectToRoute('meeting');
+                        $response = $this->redirectToRoute('homepage');
                     }
 
                     $dispatcher->dispatch(FOSUserEvents::REGISTRATION_COMPLETED, new FilterUserResponseEvent($user, $request, $response));
@@ -96,7 +80,7 @@ class RegistrationController extends BaseController
                 else {
                     $data['error'] = $checkSmsStatus['error'];
                     
-                    return $this->render('@FOSUser/Registration/register.html.twig', [
+                    return $this->render('FOSUserBundle/registration/register.html.twig', [
                         'form' => $form->createView(),
                         'error' => $data['error'],
                     ]);
@@ -111,7 +95,7 @@ class RegistrationController extends BaseController
             }
         }
 
-        return $this->render('@FOSUser/Registration/register.html.twig', [
+        return $this->render('FOSUserBundle/registration/register.html.twig', [
             'form' => $form->createView(),
             'error' => $data['error'],
         ]);

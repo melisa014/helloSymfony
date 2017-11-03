@@ -1,3 +1,10 @@
+# Это рабочий вариант. Роутинг определяется аннотациями Symfony
+iff_chat:
+    resource: "@IFFChatBundle/Controller/"
+    type: annotation
+    
+    
+# Этот вариант гипотетичесикй подробный )))
 #iff_chat_homepage:
 #    path:     /
 #    defaults: { _controller: IFFChatBundle:Chat:index }

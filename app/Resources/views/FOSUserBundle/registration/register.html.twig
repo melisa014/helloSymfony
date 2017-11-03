@@ -1,0 +1,31 @@
+{% extends 'base.html.twig' %}
+
+{% block fos_user_content %}
+    
+    {% if error %}
+        <div>{{ error }}</div>
+    {% endif %}
+    
+    {{ form_start(form, {'method': 'post', 'action': path('fos_user_registration_register'), 'attr': {'class': 'fos_user_registration_register'}}) }}
+                
+        <div class="main-text">Регистрация</div>
+
+        <div class="text-description-fio">ФИО</div>
+        {{ form_widget(form.username) }}
+
+        <div class="text-description-phone">Мобильный телефон</div>
+        <div class="link-input-container">
+            {{ form_widget(form.mobileNumber) }}
+            <a href="#" class="container-text-link">
+                <div  class="text-link">Отправить проверочный код</div>
+            </a>
+        </div>
+
+        <div class="text-description-sms">Код из СМС</div>
+        {{ form_widget(form.code) }}
+
+        <input type="submit" value="{{ 'Регистрация' }}" class="registration-button"/>
+
+    {{ form_end(form) }}
+
+{% endblock fos_user_content %}

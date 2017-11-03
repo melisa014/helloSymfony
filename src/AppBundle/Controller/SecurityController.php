@@ -101,7 +101,7 @@ class SecurityController extends Controller
             ])
             ->getForm();
         
-        return $this->render('security/login.html.twig', [
+        return $this->render('FOSUserBundle/security/login.html.twig', [
             'form' => $form->createView(),
             'error' => $data['error'],
             'csrf_token' => $data['csrf_token'],
