@@ -124,6 +124,8 @@ class RegistrationController extends BaseController
         $em->persist($code);
         $em->flush();
         
+//        Это ссылка для отправки смс пользователю. Принимает 4 get-параметра: 
+//        ваш логин и пароль на сайте-сервисе, мобильный номер (куда отправлять) и сообщение (что отправлять)
 //        file_get_contents('https://smsc.ru/?login=login&psw=psw&phones='.$mobileNumber.'&mes=Code: '.$rand);
         
         return new JsonResponse([
