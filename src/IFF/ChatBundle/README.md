@@ -47,12 +47,12 @@ Step 3: Manage routing
 
 The easiest way to enable routing of bundle to your application is using annotations.
 Add this code in `config/routing.yml` file of your project:
-	
+
 ```php
-iff_chat:
-    resource: "@IFFChatBundle/Controller/"
-    type: annotation
+imports:
+    resource: '@IFFChatBundle/Resources/config/routing.yml' 
 ```
+
 Use Symfony annotations to choose routes of actions:
 
 ```php	
@@ -70,3 +70,113 @@ class ChatController extends Controller
     { ... }
 ```
 
+Step 4: Связь с таблицей пользователей
+----------------------
+
+Подробнее о связывании таблиц в Symfony можно почитать в официальной документации: https://symfony.com/doc/current/doctrine/associations.html#content_wrapper
+Или рассмотреть пример на сайте ItForFree: http://fkn.ktu10.com/?q=node/9487
+Добавьте следующий код в сущность пользователей (@AppBundle/Entity/User):
+    
+```php
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="IFF\ChatBundle\Entity\Message", mappedBy="userFrom")
+     */
+    protected $sentMessages;
+    
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="IFF\ChatBundle\Entity\Message", mappedBy="userTo")
+     */
+    protected $receivedMessages;
+    
+    public function __construct()
+    {
+        parent::__construct();
+        
+        $this->sentMessages = new ArrayCollection(); 
+        $this->receivedMessages = new ArrayCollection(); 
+    }
+    
+    /**
+     * @param Message $sentMessage
+     * 
+     * @return self
+     */
+    public function addSentMessages(Message $sentMessage): self
+    {
+        if (!$this->sentMessages->contains($sentMessage)) { 
+            $sentMessage->setHouse($this); 
+            $this->sentMessages->add($sentMessage); 
+        }
+
+        return $this;
+    }
+            
+    /**
+     * @param Message $sentMessage
+     * 
+     * @return self
+     */
+    public function removeSentMessages(Message $sentMessage): self
+    {
+        if ($this->sentMessages->contains($sentMessage)) { 
+            $this->sentMessages->removeElement($sentMessage); 
+        }
+
+        return $this;
+    }
+    
+    /**
+     * Возвращает список всех юзеров в коллекции
+     * 
+     * @return ArrayCollection
+     */
+    public function getSentMessages(): ArrayCollection
+    {
+        return $this->sentMessages; 
+    }
+    
+    
+    
+    /**
+     * @param Message $recervedMessage
+     * 
+     * @return self
+     */
+    public function addReceivedMessages(Message $recervedMessage): self
+    {
+        if (!$this->recervedMessage->contains($recervedMessage)) { 
+            $recervedMessage->setHouse($this); 
+            $this->recervedMessage->add($recervedMessage); 
+        }
+
+        return $this;
+    }
+            
+    /**
+     * @param Message $recervedMessage
+     * 
+     * @return self
+     */
+    public function removeReceivedMessages(Message $recervedMessage): self
+    {
+        if ($this->recervedMessage->contains($recervedMessage)) { 
+            $this->recervedMessage->removeElement($recervedMessage); 
+        }
+
+        return $this;
+    }
+    
+    /**
+     * Возвращает список всех юзеров в коллекции
+     * 
+     * @return ArrayCollection
+     */
+    public function getReceivedMessages(): ArrayCollection
+    {
+        return $this->recervedMessage; 
+    }
+```

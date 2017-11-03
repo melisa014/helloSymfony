@@ -19,11 +19,11 @@
 
 Проект учебный, создан для изучения возможностей Symfony. Итак, что есть внутри:
 
-1) Работа с сущностями и БД PostgreSQL. Миграции.
-2) Ассоциации (связанные таблицы по внешнему ключу)
-3) Реистрация и аутентификация пользователя с помощью FOSUserBundle
-4) Регистрация и аутентификация пользователя по смс (ajax)
-5) Чат на ajax-e (IFFChatBundle)
+1) Работа с сущностями и БД PostgreSQL. Миграции. (AppBundle/Entity)
+2) Ассоциации (связанные таблицы по внешнему ключу) (AppBundle/Entity, IFFChatBundle/Entity)
+3) Реистрация и аутентификация пользователя с помощью FOSUserBundle (AppBundle/Controller/RegistrationController.php и AppBundle/Controller/SecurityController.php)
+4) Регистрация и аутентификация пользователя по смс (ajax) (AppBundle/Controller/RegistrationController.php ("/generateSmsCode") и web/js/sendSms.js)
+5) Чат на ajax-e. На базе пользовательского пакета. (IFFChatBundle)
 
 Symfony Standard Edition
 ========================

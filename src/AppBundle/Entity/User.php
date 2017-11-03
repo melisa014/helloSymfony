@@ -34,6 +34,13 @@ class User extends BaseUser
     protected $mobileNumber;
     
     /**
+     * @var array
+     * 
+     * @ORM\Column(type="text", name="friends")
+     */
+    protected $friends;
+    
+    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="IFF\ChatBundle\Entity\Message", mappedBy="userFrom")
@@ -53,6 +60,7 @@ class User extends BaseUser
         
         $this->sentMessages = new ArrayCollection(); 
         $this->receivedMessages = new ArrayCollection(); 
+        $this->friends = null;
         
         $this->email = $this->email ? $this->email : $this->id;
         $this->password = $this->password ? $this->password : '';
@@ -83,6 +91,44 @@ class User extends BaseUser
     public function setMobileNumber($mobileNumber): self
     {
         $this->mobileNumber = $mobileNumber;
+        
+        return $this;
+    }
+    
+    /**
+     * @return ArrayCollection
+     */
+    public function getFriends(): ArrayCollection
+    {
+        return $this->friends;
+    }
+    
+    /**
+     * @param int $friendId
+     * 
+     * @return self
+     */
+    public function addFriend(int $friendId): self
+    {
+        if($this->friends !== null) {
+            if (!array_search($friendId, $this->friends)) { 
+                $this->friends[] = $friendId; 
+            }
+        }
+       
+        return $this;
+    }
+    
+    /**
+     * @param int $friendId
+     * 
+     * @return self
+     */
+    public function removeFriend(int $friendId): self
+    {
+        if($this->friends !== null) {
+            unset($this->friends[array_search($friendId, $this->friends)]);
+        }
         
         return $this;
     }

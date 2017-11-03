@@ -35,7 +35,7 @@ class Message
      * @ORM\Column(name="date", type="datetime")
      */
     private $timestamp;
-
+    
     /**
      * @var User
      *

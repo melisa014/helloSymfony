@@ -5,13 +5,13 @@
     <div class='friends-list-conteiner'>
         <h3>Ваши друзья</h3>
         <div>
-            {% if error.anyUsers %}
-                <div>{{ error.anyUsers }}</div>
+            {% if error.anyFriends %}
+                <div>{{ error.anyFriends }}</div>
             {% endif %}
             <table>
-                {% for user in users %}
-                    <tr id="{{ user.id }}">
-                        <td>{{ user.username }}</td>
+                {% for friend in friends %}
+                    <tr id="{{ friend.id }}">
+                        <td>{{ friend.username }}</td>
                         <td>Текст сообщения</td>
                     </tr>
                 {% endfor %}
