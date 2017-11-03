@@ -40,9 +40,17 @@ class Message
      * @var User
      *
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
-     * @ORM\JoinColumn(name="user_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="user_from", referencedColumnName="id")
      */
-    private $user;
+    private $userFrom;
+    
+    /**
+     * @var User
+     *
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumn(name="user_to", referencedColumnName="id")
+     */
+    private $userTo;
     
     /**
      * @return int
@@ -92,26 +100,50 @@ class Message
         return $this;
     }
 
-        /**
+    /**
      * Узнать, какой пользователь написал сообщение
      * 
      * @return User
      */
-    public function getUser(): User
+    public function getUserFrom(): User
     {
-        return $this->user;
+        return $this->userFrom;
     }
     
     /**
-     * Установить связь с таблицей домов
+     * Установить связь с таблицей пользователей
      * 
-     * @param User $user
+     * @param User $userFrom
      * 
      * @return self
      */
-    public function setUser(User $user): self
+    public function setUserFrom(User $userFrom): self
     {
-        $this->user = $user;
+        $this->userFrom = $userFrom;
+        
+        return $this;
+    }
+    
+    /**
+     * Узнать, какому пользователю написано сообщение
+     * 
+     * @return User
+     */
+    public function getUserTo(): User
+    {
+        return $this->userTo;
+    }
+    
+    /**
+     * Установить связь с таблицей пользователей
+     * 
+     * @param User $userTo
+     * 
+     * @return self
+     */
+    public function setUserTo(User $userTo): self
+    {
+        $this->userTo = $userTo;
         
         return $this;
     }

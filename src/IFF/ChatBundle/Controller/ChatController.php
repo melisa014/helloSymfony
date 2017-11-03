@@ -63,14 +63,14 @@ class ChatController extends Controller
     {
         $toUser = $request->get('toUser');
         $content = $request->get('message');
-        
         $fromUser = $this->getUser();
                 
         $message = new Message();
         $message->setContent($content);
         $message->setTimestamp(new DateTime());
         
-        $message->setUser($fromUser);
+        $message->setUserFrom($fromUser);
+        $message->setUserTo($toUser);
         
         $em = $this->getDoctrine()->getManager();
         $em->persist($message);
@@ -97,7 +97,8 @@ class ChatController extends Controller
         
         $em = $this->getDoctrine()->getManager();
         $messages = $em->getRepository(Message::class)->findBy([
-            'user_id' => $data['user_id']
+            'user_id' => $data['user_id'],
+            
         ]);
         
         

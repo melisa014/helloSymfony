@@ -36,15 +36,23 @@ class User extends BaseUser
     /**
      * @var ArrayCollection
      *
-     * @ORM\OneToMany(targetEntity="IFF\ChatBundle\Entity\Message", mappedBy="user")
+     * @ORM\OneToMany(targetEntity="IFF\ChatBundle\Entity\Message", mappedBy="userFrom")
      */
-    protected $messages;
+    protected $sentMessages;
+    
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="IFF\ChatBundle\Entity\Message", mappedBy="userTo")
+     */
+    protected $receivedMessages;
 
      public function __construct()
     {
         parent::__construct();
         
-        $this->messages = new ArrayCollection(); 
+        $this->sentMessages = new ArrayCollection(); 
+        $this->receivedMessages = new ArrayCollection(); 
         
         $this->email = $this->email ? $this->email : $this->id;
         $this->password = $this->password ? $this->password : '';
@@ -80,29 +88,29 @@ class User extends BaseUser
     }
     
     /**
-     * @param Message $message
+     * @param Message $sentMessage
      * 
      * @return self
      */
-    public function addMessage(Message $message): self
+    public function addSentMessages(Message $sentMessage): self
     {
-        if (!$this->messages->contains($message)) { 
-            $user->setHouse($this); 
-            $this->messages->add($message); 
+        if (!$this->sentMessages->contains($sentMessage)) { 
+            $sentMessage->setHouse($this); 
+            $this->sentMessages->add($sentMessage); 
         }
 
         return $this;
     }
             
     /**
-     * @param Message $message
+     * @param Message $sentMessage
      * 
      * @return self
      */
-    public function removeMessage(Message $message): self
+    public function removeSentMessages(Message $sentMessage): self
     {
-        if ($this->messages->contains($message)) { 
-            $this->messages->removeElement($message); 
+        if ($this->sentMessages->contains($sentMessage)) { 
+            $this->sentMessages->removeElement($sentMessage); 
         }
 
         return $this;
@@ -113,9 +121,50 @@ class User extends BaseUser
      * 
      * @return ArrayCollection
      */
-    public function getMessages(): ArrayCollection
+    public function getSentMessages(): ArrayCollection
     {
-        return $this->messages; 
+        return $this->sentMessages; 
+    }
+    
+    
+    
+    /**
+     * @param Message $recervedMessage
+     * 
+     * @return self
+     */
+    public function addReceivedMessages(Message $recervedMessage): self
+    {
+        if (!$this->recervedMessage->contains($recervedMessage)) { 
+            $recervedMessage->setHouse($this); 
+            $this->recervedMessage->add($recervedMessage); 
+        }
+
+        return $this;
+    }
+            
+    /**
+     * @param Message $recervedMessage
+     * 
+     * @return self
+     */
+    public function removeReceivedMessages(Message $recervedMessage): self
+    {
+        if ($this->recervedMessage->contains($recervedMessage)) { 
+            $this->recervedMessage->removeElement($recervedMessage); 
+        }
+
+        return $this;
+    }
+    
+    /**
+     * Возвращает список всех юзеров в коллекции
+     * 
+     * @return ArrayCollection
+     */
+    public function getReceivedMessages(): ArrayCollection
+    {
+        return $this->recervedMessage; 
     }
     
 }
