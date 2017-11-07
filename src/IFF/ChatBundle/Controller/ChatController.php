@@ -3,6 +3,7 @@
 namespace IFF\ChatBundle\Controller;
 
 use AppBundle\Entity\User;
+use AppBundle\Entity\Friend;
 use DateTime;
 use IFF\ChatBundle\Entity\Message;
 use IFF\ChatBundle\Form\ChatType;
@@ -127,29 +128,27 @@ class ChatController extends Controller
     }
     
     /**
-     * @Route("/add_friend")
-     * 
-     * @param int $friendId
-     */
-    public function addFriend(int $friendId)
-    {
-        $activeUser = $this->getUser();
-        $activeUser->addFriend($friendId);
-    }
-    
-    /**
      * @Route("/add")
      */
-    public function add()
+    public function addFriendAction()
     {
-        $activeUser = $this->getUser();
-        $activeUser->addFriend(20);
+        $em = $this->getDoctrine()->getManager();
         
-        echo "<pre>";
-        print_r($activeUser->getFriends());
-        echo "</pre>";
-        die('tttt');
-
+        $activeUser = $this->getUser();
+        
+        $friend = new Friend();
+        $friend->setFriendId(31);
+        $friend->setUser($activeUser);
+        
+        $friend_second = new Friend();
+        $friend_second->setFriendId($activeUser->getId());
+        
+        $friend_second->setUser($em->getRepository(User::class)->find(31));
+        
+        $em->persist($activeUser);
+        $em->persist($friend);
+        $em->persist($friend_second);
+        $em->flush(); 
 
         return $this->redirectToRoute('homepage');
     }
@@ -159,10 +158,21 @@ class ChatController extends Controller
      * 
      * @param int $friendId
      */
-    public function removeFriend(int $friendId)
+    public function removeFriendAction(int $friendId)
     {
         $activeUser = $this->getUser();
-        $activeUser->removeFriend($friendId);
+        
+        return new $this->redirectToRoute('homepage');
+    }
+    
+    /**
+     * @Route("/test")
+     * 
+     * @param int $friendId
+     */
+    public function testAction(int $friendId)
+    {
+       
         
         return new $this->redirectToRoute('homepage');
     }

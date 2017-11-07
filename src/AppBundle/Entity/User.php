@@ -38,6 +38,13 @@ class User extends BaseUser
      * 
      * @ORM\Column(type="text", name="friends")
      */
+//    protected $friends;
+    
+    /**
+     * @var ArrayCollection
+     * 
+     * @ORM\OneToMany(targetEntity="Friend", mappedBy="user")
+     */
     protected $friends;
     
     /**
@@ -60,7 +67,8 @@ class User extends BaseUser
         
         $this->sentMessages = new ArrayCollection(); 
         $this->receivedMessages = new ArrayCollection(); 
-        $this->friends = null;
+//        $this->friends;
+        $this->friends = new ArrayCollection();
         
         $this->email = $this->email ? $this->email : $this->id;
         $this->password = $this->password ? $this->password : '';
@@ -96,41 +104,41 @@ class User extends BaseUser
     }
     
     /**
+     * @param Friend $friend
+     * 
+     * @return self
+     */
+    public function addFriend(Friend $friend): self
+    {
+        if (!$this->friends->contains($friend)) { 
+            $this->friends->add($friend); 
+        }
+
+        return $this;
+    }
+            
+    /**
+     * @param Friend $friend
+     * 
+     * @return self
+     */
+    public function removeFriend(Friend $friend): self
+    {
+        if ($this->friends->contains($friend)) { 
+            $this->friends->removeElement($friend); 
+        }
+
+        return $this;
+    }
+    
+    /**
+     * Возвращает список всех друзей в коллекции
+     * 
      * @return ArrayCollection
      */
     public function getFriends(): ArrayCollection
     {
-        return $this->friends;
-    }
-    
-    /**
-     * @param int $friendId
-     * 
-     * @return self
-     */
-    public function addFriend(int $friendId): self
-    {
-        if($this->friends !== null) {
-            if (!array_search($friendId, $this->friends)) { 
-                $this->friends[] = $friendId; 
-            }
-        }
-       
-        return $this;
-    }
-    
-    /**
-     * @param int $friendId
-     * 
-     * @return self
-     */
-    public function removeFriend(int $friendId): self
-    {
-        if($this->friends !== null) {
-            unset($this->friends[array_search($friendId, $this->friends)]);
-        }
-        
-        return $this;
+        return $this->friends; 
     }
     
     /**
@@ -165,9 +173,9 @@ class User extends BaseUser
     /**
      * Возвращает список всех юзеров в коллекции
      * 
-     * @return ArrayCollection
+     * @return Collection
      */
-    public function getSentMessages(): ArrayCollection
+    public function getSentMessages(): Collection
     {
         return $this->sentMessages; 
     }
