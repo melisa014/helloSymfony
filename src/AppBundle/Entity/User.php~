@@ -2,17 +2,20 @@
 
 namespace AppBundle\Entity;
 
-use FOS\UserBundle\Model\User as BaseUser;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use IFF\ChatBundle\Entity\Message;
+use FOS\UserBundle\Model\User as BaseUser;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="fos_user")
+ * @ORM\Table(name="`user`")
  */
 class User extends BaseUser
 {
     /**
-     * @var integer
+     * @var int
      * 
      * @ORM\Id
      * @ORM\Column(type="integer")
@@ -21,8 +24,67 @@ class User extends BaseUser
      */
     protected $id;
     
-    public function __construct()
+    /**
+     * @var srting
+     * 
+     * @ORM\Column(type="string", name="mobile_number")
+     * 
+     * @Assert\NotBlank()
+     */
+    protected $mobileNumber;
+    
+    /**
+     * @var ArrayCollection
+     * 
+     * @ORM\OneToMany(targetEntity="Friend", mappedBy="user")
+     */
+    protected $friends;
+    
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="IFF\ChatBundle\Entity\Message", mappedBy="userFrom")
+     */
+    protected $sentMessages;
+    
+    /**
+     * @var ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="IFF\ChatBundle\Entity\Message", mappedBy="userTo")
+     */
+    protected $receivedMessages;
+    
+    /**
+     * Many Users have Many Users.
+     * @ORM\ManyToMany(targetEntity="User", mappedBy="myFriends")
+     */
+    protected $friendsWithMe;
+
+    /**
+     * Many Users have many Users.
+     * @ORM\ManyToMany(targetEntity="User", inversedBy="friendsWithMe")
+     * @ORM\JoinTable(name="friends",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="friend_user_id", referencedColumnName="id")}
+     *      )
+     */
+    protected $myFriends;
+
+     public function __construct()
     {
         parent::__construct();
+        
+        $this->sentMessages = new ArrayCollection(); 
+        $this->receivedMessages = new ArrayCollection(); 
+        
+        $this->friendsWithMe = new ArrayCollection();
+        $this->myFriends = new ArrayCollection();
+        
+        $this->email = $this->email ? $this->email : $this->id;
+        $this->password = $this->password ? $this->password : '';
+        $this->plainPassword = $this->plainPassword ? $this->plainPassword : '';
     }
+
+    
+    
 }

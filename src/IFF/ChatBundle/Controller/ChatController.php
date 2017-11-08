@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\Debug\Debug;
 
 /**
  * @Route("/chat")
@@ -39,7 +40,8 @@ class ChatController extends Controller
         
         // Это закоментированно, пока не создано поле friends для юзеров
 //        $friends = [];
-//        foreach ($activeUser->getFriends() as $friendId) {
+//        $friendList = $activeUser->getFriends()->toArray();
+//        foreach ($friendList as $friend) {
 //            $friends[] = $em->getRepository(User::class)->findBy($friendId);
 //        }
 //        if (empty($friends)) {
@@ -97,6 +99,8 @@ class ChatController extends Controller
     }
     
     /**
+     * Выполняет загрузку сообщений из базы данных и отправку их пользователю через ajax виде java-скрипта
+     * 
      * @Route("/loading")
      * 
      * @param Request $request
@@ -105,6 +109,47 @@ class ChatController extends Controller
      */
     public function loadMessagesAction(Request $request): JsonResponse
     {
+        // тут мы получили переменную переданную нашим java-скриптом при помощи ajax
+        // это:  $_POST['last'] - номер последнего сообщения которое загрузилось у пользователя
+
+        $last_message_id = intval($_POST['last']); // возвращает целое значение переменной
+
+        // выполняем запрос к базе данных для получения 10 сообщений последних сообщений с номером большим чем $last_message_id
+        $query = mysql_query("SELECT * FROM messages WHERE ( id > $last_message_id ) ORDER BY id DESC LIMIT 10");
+
+        // проверяем есть ли какие-нибудь новые сообщения
+        if (mysql_num_rows($query) > 0) {
+        // начинаем формировать javascript который мы передадим клиенту
+        $js = 'var chat = $("#chat_area");'; // получаем "указатель" на div, в который мы добавим новые сообщения
+
+        // следующий конструкцией мы получаем массив сообщений из нашего запроса
+        $messages = array();
+        while ($row = mysql_fetch_array($query)) {
+        $messages[] = $row;
+        }
+
+        // записываем номер последнего сообщения
+        // [0] - это вернёт нам первый элемент в массиве $messages, но так как мы выполнили запрос с параметром "DESC" (в обратном порядке),
+        // то это получается номер последнего сообщения в базе данных
+        $last_message_id = $messages[0]['id'];
+
+        // переворачиваем массив (теперь он в правильном порядке)
+        $messages = array_reverse($messages);
+
+        // идём по всем элементам массива $messages
+        foreach ($messages as $value) {
+        // продолжаем формировать скрипт для отправки пользователю
+        $js .= 'chat.append("<span>' . $value['name'] . '&raquo; ' . $value['text'] . '</span>");'; // добавить сообщние (<span>Имя &raquo; текст сообщения</span>) в наш div
+        }
+
+        $js .= "last_message_id = $last_message_id;"; // запишем номер последнего полученного сообщения, что бы в следующий раз начать загрузку с этого сообщения
+
+        // отправляем полученный код пользователю, где он будет выполнен при помощи функции eval()
+        echo $js;
+        }
+
+        
+        
         $errors['showMessages'] = '';
         
         $messages = [];
@@ -112,6 +157,7 @@ class ChatController extends Controller
         $em = $this->getDoctrine()->getManager();
         $messages = $em->getRepository(Message::class)->findBy([
             'user_id' => $data['user_id'],
+            'lastMessageId' => $lastMessageId
             
         ]);
         
@@ -128,6 +174,8 @@ class ChatController extends Controller
     }
     
     /**
+     * Создаёт 2 записи в таблице Friend: для 1 и 2 юзера
+     * 
      * @Route("/add")
      */
     public function addFriendAction()
@@ -135,34 +183,57 @@ class ChatController extends Controller
         $em = $this->getDoctrine()->getManager();
         
         $activeUser = $this->getUser();
+        $friend = $em->getRepository(User::class)->find(1);
         
-        $friend = new Friend();
-        $friend->setFriendId(31);
-        $friend->setUser($activeUser);
-        
-        $friend_second = new Friend();
-        $friend_second->setFriendId($activeUser->getId());
-        
-        $friend_second->setUser($em->getRepository(User::class)->find(31));
+        $activeUser->addMyFriend($friend); // записывает в БД и в поле ActiveUser-a
+//        $activeUser->addFriendsWithMe($friend); // не записывает в БД, записывает в поле ActiveUser-a, нужно использовать только чтобы доставать тех, кто со мной дружит
+//        
+        $friend->addMyFriend($activeUser); // записывает в БД и в поле Friend-a
+//        $friend->addFriendsWithMe($activeUser); // не записывает в БД, записывает в поле Friend-a
         
         $em->persist($activeUser);
         $em->persist($friend);
-        $em->persist($friend_second);
-        $em->flush(); 
+        $em->flush();
+        
+        $friends_1 = $activeUser->getMyFriends();
+        $friendsWhitMe_1 = $activeUser->getFriendsWithMe();       
+        
+        $friends = $friend->getMyFriends();
+        $friendsWhitMe = $friend->getFriendsWithMe();
+
+        dump($friends_1->getValues());
+        dump($friendsWhitMe_1->getValues());
+        
+        dump($friends->getValues());
+        dump($friendsWhitMe->getValues());
+        die('sfe');
 
         return $this->redirectToRoute('homepage');
     }
     
     /**
-     * @Route("/remove_friend")
+     * Удаляет 2 записи в таблице Friend: для 1 и 2 юзера
      * 
-     * @param int $friendId
+     * @Route("/remove")
      */
-    public function removeFriendAction(int $friendId)
+    public function removeFriendAction()
     {
+        $em = $this->getDoctrine()->getManager();
+        
+        $friend = $em->getRepository(User::class)->find(2);
         $activeUser = $this->getUser();
         
-        return new $this->redirectToRoute('homepage');
+        $activeUser->removeMyFriend($friend);
+        $activeUser->removeFriendsWithMe($friend);
+        
+        $friend->removeMyFriend($activeUser);
+        $friend->removeFriendsWithMe($activeUser);
+        
+        $em->persist($activeUser);
+        $em->persist($friend);
+        $em->flush(); 
+        
+        return $this->redirectToRoute('homepage');
     }
     
     /**
@@ -172,8 +243,6 @@ class ChatController extends Controller
      */
     public function testAction(int $friendId)
     {
-       
-        
         return new $this->redirectToRoute('homepage');
     }
     

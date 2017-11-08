@@ -34,20 +34,6 @@ class User extends BaseUser
     protected $mobileNumber;
     
     /**
-     * @var array
-     * 
-     * @ORM\Column(type="text", name="friends")
-     */
-//    protected $friends;
-    
-    /**
-     * @var ArrayCollection
-     * 
-     * @ORM\OneToMany(targetEntity="Friend", mappedBy="user")
-     */
-    protected $friends;
-    
-    /**
      * @var ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="IFF\ChatBundle\Entity\Message", mappedBy="userFrom")
@@ -60,6 +46,28 @@ class User extends BaseUser
      * @ORM\OneToMany(targetEntity="IFF\ChatBundle\Entity\Message", mappedBy="userTo")
      */
     protected $receivedMessages;
+    
+    /**
+     * Many Users have Many Users.
+     * 
+     * @var ArrayCollection
+     * 
+     * @ORM\ManyToMany(targetEntity="User", mappedBy="myFriends")
+     */
+    protected $friendsWithMe;
+
+    /**
+     * Many Users have many Users.
+     * 
+     * @var ArrayCollection
+     * 
+     * @ORM\ManyToMany(targetEntity="User", inversedBy="friendsWithMe")
+     * @ORM\JoinTable(name="friends",
+     *      joinColumns={@ORM\JoinColumn(name="user_id", referencedColumnName="id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="friend_user_id", referencedColumnName="id")}
+     *      )
+     */
+    protected $myFriends;
 
      public function __construct()
     {
@@ -67,8 +75,9 @@ class User extends BaseUser
         
         $this->sentMessages = new ArrayCollection(); 
         $this->receivedMessages = new ArrayCollection(); 
-//        $this->friends;
-        $this->friends = new ArrayCollection();
+        
+        $this->friendsWithMe = new ArrayCollection();
+        $this->myFriends = new ArrayCollection();
         
         $this->email = $this->email ? $this->email : $this->id;
         $this->password = $this->password ? $this->password : '';
@@ -82,7 +91,19 @@ class User extends BaseUser
     {
         return $this->id;
     }
-    
+
+    /**
+     * @param string $mobileNumber
+     *
+     * @return User
+     */
+    public function setMobileNumber(string $mobileNumber)
+    {
+        $this->mobileNumber = $mobileNumber;
+
+        return $this;
+    }
+
     /**
      * @return string
      */
@@ -90,135 +111,144 @@ class User extends BaseUser
     {
         return $this->mobileNumber;
     }
-    
+
     /**
-     * @param string $mobileNumber
-     * 
-     * @return self
+     * Add sentMessage
+     *
+     * @param Message $sentMessage
+     *
+     * @return User
      */
-    public function setMobileNumber($mobileNumber): self
+    public function addSentMessage(Message $sentMessage)
     {
-        $this->mobileNumber = $mobileNumber;
+        $this->sentMessages[] = $sentMessage;
+
+        return $this;
+    }
+
+    /**
+     * Remove sentMessage
+     *
+     * @param Message $sentMessage
+     */
+    public function removeSentMessage(Message $sentMessage)
+    {
+        $this->sentMessages->removeElement($sentMessage);
+    }
+
+    /**
+     * Get sentMessages
+     *
+     * @return ArrayCollection
+     */
+    public function getSentMessages()
+    {
+        return $this->sentMessages;
+    }
+
+    /**
+     * Add receivedMessage
+     *
+     * @param Message $receivedMessage
+     *
+     * @return User
+     */
+    public function addReceivedMessage(Message $receivedMessage)
+    {
+        $this->receivedMessages[] = $receivedMessage;
+
+        return $this;
+    }
+
+    /**
+     * Remove receivedMessage
+     *
+     * @param Message $receivedMessage
+     */
+    public function removeReceivedMessage(Message $receivedMessage)
+    {
+        $this->receivedMessages->removeElement($receivedMessage);
+    }
+
+    /**
+     * Get receivedMessages
+     *
+     * @return ArrayCollection
+     */
+    public function getReceivedMessages()
+    {
+        return $this->receivedMessages;
+    }
+
+    /**
+     * Add friendsWithMe
+     *
+     * @param User $friendsWithMe
+     *
+     * @return User
+     */
+    public function addFriendsWithMe(User $friendsWithMe)
+    {
+        if (!$this->friendsWithMe->contains($friendsWithMe)) {
+            $this->friendsWithMe[] = $friendsWithMe;
+        }
         
         return $this;
     }
-    
-    /**
-     * @param Friend $friend
-     * 
-     * @return self
-     */
-    public function addFriend(Friend $friend): self
-    {
-        if (!$this->friends->contains($friend)) { 
-            $this->friends->add($friend); 
-        }
 
-        return $this;
-    }
-            
     /**
-     * @param Friend $friend
-     * 
-     * @return self
+     * Remove friendsWithMe
+     *
+     * @param User $friendsWithMe
      */
-    public function removeFriend(Friend $friend): self
+    public function removeFriendsWithMe(User $friendsWithMe)
     {
-        if ($this->friends->contains($friend)) { 
-            $this->friends->removeElement($friend); 
-        }
-
-        return $this;
+        $this->friendsWithMe->removeElement($friendsWithMe);
     }
-    
+
     /**
-     * Возвращает список всех друзей в коллекции
-     * 
+     * Get friendsWithMe
+     *
      * @return ArrayCollection
      */
-    public function getFriends(): ArrayCollection
+    public function getFriendsWithMe()
     {
-        return $this->friends; 
+        return $this->friendsWithMe;
     }
-    
-    /**
-     * @param Message $sentMessage
-     * 
-     * @return self
-     */
-    public function addSentMessages(Message $sentMessage): self
-    {
-        if (!$this->sentMessages->contains($sentMessage)) { 
-            $sentMessage->setHouse($this); 
-            $this->sentMessages->add($sentMessage); 
-        }
 
+    /**
+     * Add myFriend
+     *
+     * @param User $myFriend
+     *
+     * @return User
+     */
+    public function addMyFriend(User $myFriend)
+    {
+        if (!$this->myFriends->contains($myFriend)) {
+            $this->myFriends[] = $myFriend;
+        }
+        
         return $this;
     }
-            
-    /**
-     * @param Message $sentMessage
-     * 
-     * @return self
-     */
-    public function removeSentMessages(Message $sentMessage): self
-    {
-        if ($this->sentMessages->contains($sentMessage)) { 
-            $this->sentMessages->removeElement($sentMessage); 
-        }
 
-        return $this;
-    }
-    
     /**
-     * Возвращает список всех юзеров в коллекции
-     * 
-     * @return Collection
+     * Remove myFriend
+     *
+     * @param User $myFriend
      */
-    public function getSentMessages(): Collection
+    public function removeMyFriend(User $myFriend)
     {
-        return $this->sentMessages; 
+        $this->myFriends->removeElement($myFriend);
     }
-    
-    
-    
-    /**
-     * @param Message $recervedMessage
-     * 
-     * @return self
-     */
-    public function addReceivedMessages(Message $recervedMessage): self
-    {
-        if (!$this->recervedMessage->contains($recervedMessage)) { 
-            $recervedMessage->setHouse($this); 
-            $this->recervedMessage->add($recervedMessage); 
-        }
 
-        return $this;
-    }
-            
     /**
-     * @param Message $recervedMessage
-     * 
-     * @return self
-     */
-    public function removeReceivedMessages(Message $recervedMessage): self
-    {
-        if ($this->recervedMessage->contains($recervedMessage)) { 
-            $this->recervedMessage->removeElement($recervedMessage); 
-        }
-
-        return $this;
-    }
-    
-    /**
-     * Возвращает список всех юзеров в коллекции
-     * 
+     * Get myFriends
+     *
      * @return ArrayCollection
      */
-    public function getReceivedMessages(): ArrayCollection
+    public function getMyFriends()
     {
-        return $this->recervedMessage; 
+        return $this->myFriends;
     }
-    
 }

@@ -1,6 +1,12 @@
 $(function(){
+    $("#chat_content").focus(); // по поле ввода сообщения ставим фокус
+    setInterval("loadMessages();", 2000); // создаём таймер который будет вызывать загрузку сообщений каждые 2 секунды (2000 миллисекунд)
+            
+    var lastMessageId = 0; // номер последнего сообщения, что получил пользователь
+    var loadingStarted = false; // можем ли мы выполнять сейчас загрузку сообщений. Сначала стоит false, что значит - да, можем
+
     saveMessages();
-    loadMessages();
+    loadMessages(loadingStarted, lastMessageId);
     chooseUser();
     clearUser();
 });
@@ -24,7 +30,7 @@ function saveMessages()
         })
         .done(function(res) {
             console.log(res);
-            
+            loadMessages();
         })
         .fail(function(xhr, status, error){
             $('.holder-loader').removeClass('open');
@@ -43,28 +49,48 @@ function saveMessages()
 
             console.log('ajaxError:', errorInfo); // в консоль
             alert(errorInfo); // если требуется и то на экран
-        })
+        });
+        
+        $("#chat_content").val(""); // очистим поле ввода сообщения
+        $("#chat_content").focus(); // и поставим на него фокус
+        
         return false;
     });
 }
 
 function loadMessages()
 {
-    $('').on('', function(){
-        
-        console.log('');
+    
+    // Проверяем можем ли мы загружать сообщения. Это сделано для того, чтобы мы не начали загрузку заново, если старая загрузка ещё не закончилась.
+    if(!loadingStarted) {
+        loadingStarted = true; // загрузка началась
+        // отсылаем запрос серверу, который вернёт нам javascript
+        $.ajax({
+            act: "load", // указываем на то что это загрузка сообщений
+            last: last_message_id, // передаём номер последнего сообщения который получил пользователь в прошлую загрузку
+            rand: (new Date()).getTime()
+        },
+        function (result) { // в эту функцию в качестве параметра передаётся javascript код, который мы должны выполнить
+            $(".chat").scrollTop($(".chat").get(0).scrollHeight); // прокручиваем сообщения вниз
+            loadingStarted = false; // говорим что загрузка закончилась, можем теперь начать новую загрузку
+        });
+                
+    }
+          
+    if(!loadingStarted) {
+        loadingStarted = true;
         
         $.ajax({
             url: '/chat/loading',
             type: 'post',
             dataType: 'json',
             data: {
-                
+                lastMessageId: lastMessageId
             }
         })
         .done(function(res) {
             console.log(res);
-            
+
         })
         .fail(function(xhr, status, error){
             $('.holder-loader').removeClass('open');
@@ -83,9 +109,10 @@ function loadMessages()
 
             console.log('ajaxError:', errorInfo); // в консоль
             alert(errorInfo); // если требуется и то на экран
-        })
-        return false;
-    });
+        });
+
+        loadingStarted = false;
+    }    
 }
 
 function chooseUser()
