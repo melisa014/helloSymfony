@@ -188,7 +188,7 @@ class ChatController extends Controller
         $activeUser->addMyFriend($friend); // записывает в БД и в поле ActiveUser-a
 //        $activeUser->addFriendsWithMe($friend); // не записывает в БД, записывает в поле ActiveUser-a, нужно использовать только чтобы доставать тех, кто со мной дружит
 //        
-        $friend->addMyFriend($activeUser); // записывает в БД и в поле Friend-a
+//        $friend->addMyFriend($activeUser); // записывает в БД и в поле Friend-a
 //        $friend->addFriendsWithMe($activeUser); // не записывает в БД, записывает в поле Friend-a
         
         $em->persist($activeUser);
@@ -206,6 +206,7 @@ class ChatController extends Controller
         
         dump($friends->getValues());
         dump($friendsWhitMe->getValues());
+        
         die('sfe');
 
         return $this->redirectToRoute('homepage');
