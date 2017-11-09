@@ -183,17 +183,54 @@ class ChatController extends Controller
         $em = $this->getDoctrine()->getManager();
         
         $activeUser = $this->getUser();
-        $friend = $em->getRepository(User::class)->find(1);
+        $friend = $em->getRepository(User::class)->find(2);
         
         $activeUser->addMyFriend($friend); // записывает в БД и в поле ActiveUser-a
-//        $activeUser->addFriendsWithMe($friend); // не записывает в БД, записывает в поле ActiveUser-a, нужно использовать только чтобы доставать тех, кто со мной дружит
-//        
-//        $friend->addMyFriend($activeUser); // записывает в БД и в поле Friend-a
-//        $friend->addFriendsWithMe($activeUser); // не записывает в БД, записывает в поле Friend-a
+        
+        $friend->addMyFriend($activeUser); // записывает в БД и в поле Friend-a
         
         $em->persist($activeUser);
         $em->persist($friend);
         $em->flush();
+        
+        return $this->redirectToRoute('homepage');
+    }
+    
+    /**
+     * Удаляет 2 записи в таблице Friend: для 1 и 2 юзера
+     * 
+     * @Route("/remove")
+     */
+    public function removeFriendAction()
+    {
+        $em = $this->getDoctrine()->getManager();
+        
+        $friend = $em->getRepository(User::class)->find(3);
+        $activeUser = $this->getUser();
+        
+        $activeUser->removeMyFriend($friend);
+        
+        $friend->removeMyFriend($activeUser);
+        
+        $em->persist($activeUser);
+        $em->persist($friend);
+        $em->flush(); 
+        
+        return $this->redirectToRoute('homepage');
+    }
+    
+    /**
+     * Печатает, кто с кем дружит(для 2х пользователей). по таблице в БД, 
+     *  к сожалению, не всегда понятно, пусты ли поля myFriends и friendsWithMe
+     * 
+     * @Route("/check")
+     */
+    public function testAction()
+    {
+         $em = $this->getDoctrine()->getManager();
+        
+        $activeUser = $this->getUser();
+        $friend = $em->getRepository(User::class)->find(2);
         
         $friends_1 = $activeUser->getMyFriends();
         $friendsWhitMe_1 = $activeUser->getFriendsWithMe();       
@@ -208,42 +245,7 @@ class ChatController extends Controller
         dump($friendsWhitMe->getValues());
         
         die('sfe');
-
-        return $this->redirectToRoute('homepage');
-    }
-    
-    /**
-     * Удаляет 2 записи в таблице Friend: для 1 и 2 юзера
-     * 
-     * @Route("/remove")
-     */
-    public function removeFriendAction()
-    {
-        $em = $this->getDoctrine()->getManager();
         
-        $friend = $em->getRepository(User::class)->find(2);
-        $activeUser = $this->getUser();
-        
-        $activeUser->removeMyFriend($friend);
-        $activeUser->removeFriendsWithMe($friend);
-        
-        $friend->removeMyFriend($activeUser);
-        $friend->removeFriendsWithMe($activeUser);
-        
-        $em->persist($activeUser);
-        $em->persist($friend);
-        $em->flush(); 
-        
-        return $this->redirectToRoute('homepage');
-    }
-    
-    /**
-     * @Route("/test")
-     * 
-     * @param int $friendId
-     */
-    public function testAction(int $friendId)
-    {
         return new $this->redirectToRoute('homepage');
     }
     

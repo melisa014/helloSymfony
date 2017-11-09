@@ -187,24 +187,24 @@ class User extends BaseUser
      *
      * @return User
      */
-    public function addFriendsWithMe(User $friendsWithMe)
-    {
-        if (!$this->friendsWithMe->contains($friendsWithMe)) {
-            $this->friendsWithMe[] = $friendsWithMe;
-        }
-        
-        return $this;
-    }
+//    public function addFriendsWithMe(User $friendsWithMe)
+//    {
+//        if (!$this->friendsWithMe->contains($friendsWithMe)) {
+//            $this->friendsWithMe[] = $friendsWithMe;
+//        }
+//        
+//        return $this;
+//    }
 
     /**
      * Remove friendsWithMe
      *
      * @param User $friendsWithMe
      */
-    public function removeFriendsWithMe(User $friendsWithMe)
-    {
-        $this->friendsWithMe->removeElement($friendsWithMe);
-    }
+//    public function removeFriendsWithMe(User $friendsWithMe)
+//    {
+//        $this->friendsWithMe->removeElement($friendsWithMe);
+//    }
 
     /**
      * Get friendsWithMe
@@ -227,6 +227,7 @@ class User extends BaseUser
     {
         if (!$this->myFriends->contains($myFriend)) {
             $this->myFriends[] = $myFriend;
+            $myFriend->friendsWithMe[] = $this;
         }
         
         return $this;
@@ -240,6 +241,7 @@ class User extends BaseUser
     public function removeMyFriend(User $myFriend)
     {
         $this->myFriends->removeElement($myFriend);
+        $myFriend->friendsWithMe->removeElement($this);
     }
 
     /**
