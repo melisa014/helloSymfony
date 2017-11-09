@@ -29,43 +29,109 @@ class ChatController extends Controller
     {
         $errors = [
             'anyFriends' => '',
-            'sendMessage' => '',
             'showMessages' => '',
+            'sendMessage' => '',
         ];
-        $em = $this->getDoctrine()->getManager();
         
         // Достаём из БД всех друзей активного пользователя
         $activeUser = $this->getUser();
-        $friends = $em->getRepository(User::class)->findBy(['id' => 14]);
+        $friendList = $activeUser->getMyFriends(); 
+        if (empty($friendList)) {
+            $errors['anyFriends'] = 'У Вас пока нет друзей';
+        }
         
-        // Это закоментированно, пока не создано поле friends для юзеров
-//        $friends = [];
-//        $friendList = $activeUser->getFriends()->toArray();
-//        foreach ($friendList as $friend) {
-//            $friends[] = $em->getRepository(User::class)->findBy($friendId);
-//        }
-//        if (empty($friends)) {
-//            $errors['anyFriends'] = 'У Вас пока нет друзей';
-//        }
-        
-        // Достаём из БД все сообщения переписки активного пользователя с выбранным другом
-        $em->getRepository(Message::class)
-                ->findBy([
-                    'userFrom' => $activeUser->getId(),
-//                    'userTo' => 
-                 ]);
-        
+        //Достаём из БД все последние сообщения переписок со всеми друзьми активного пользователя
+        $userLastMessages = $this->findUsersLastMessages($activeUser, $friendList->toArray());
         
         $form = $this->createForm(ChatType::class);
         
         return $this->render('IFFChatBundle:Chat:index.html.twig', [
             'form' => $form->createView(),
             'error' => $errors,
-            'friends' => $friends,
+            'friends' => $friendList,
+            'lastMessages' => $userLastMessages,
         ]);
     }
     
     /**
+     * Возвращает массив последних сообщений активного пользователя из переписок
+     *  со всеми его друзьми. Индексы массива - id друзей
+     * 
+     * @param User $activeUser
+     * @param array $friendList
+     * 
+     * @return array $usersLastMessages
+     */
+    public function findUsersLastMessages(User $activeUser, array $friendList): array
+    {
+        $messageRepo = $this->getDoctrine()->getManager()->getRepository(Message::class);
+        $usersLastMessages = [];
+        
+        // для всех друзей активного пользователя достанем всю переписку
+        foreach ($friendList as $friend) {
+            
+            $userToUserMessages = $this->findAllUserToUserMessages($activeUser, $friend);
+            
+            // определим последнее сообщение от друга активному пользователю и наоборот
+            $usersLastMessageId = 0;
+            
+            foreach ($userToUserMessages as $message) {
+                if ($message->getId() > $usersLastMessageId) {
+                    $usersLastMessageId = $message->getId();
+                }
+            }
+            
+            // сохраняем в массив последнее сообщение с индексом == id друга
+            $usersLastMessages[$friend->getId()] = $messageRepo->find($usersLastMessageId)->getContent();
+        }
+        
+        return $usersLastMessages;
+    }
+    
+    /**
+     * Возвращает массив всех сообщений переписки активного пользователя с данным другом 
+     * отсортированный по возрастанию id сообщений
+     * 
+     * @param User $activeUser
+     * @param User $friend
+     * 
+     * @return array $userToUserMessages
+     */
+    public function findAllUserToUserMessages(User $activeUser, User $friend): array
+    {
+        $messageRepo = $this->getDoctrine()->getManager()->getRepository(Message::class);
+        
+        // достанем всю переписку пользователей
+        $activeToFriendMessages = $messageRepo->findBy([
+            'userFrom' => $activeUser,
+            'userTo' => $friend,
+        ]);
+        $friendToActiveMessages = $messageRepo->findBy([
+            'userFrom' => $friend,
+            'userTo' => $activeUser,
+        ]);
+
+        // записываем все сообщения в 1 массив
+        $userToUserMessages = [];
+        foreach ($activeToFriendMessages as $message){
+            $userToUserMessages[] = $message;
+        }
+        foreach ($friendToActiveMessages as $message){
+            $userToUserMessages[] = $message;
+        }
+        
+        // сортируем объекты сообщений по возрастанию id сообщений
+        uasort($userToUserMessages, function($a, $b){
+            if ($a->getId() == $b->getId()) {
+                return 0; 
+            }
+            return ($a->getId() < $b->getId()) ? -1 : 1;
+        });
+        
+        return $userToUserMessages;
+    }
+    
+        /**
      * @Route("/saving")
      * 
      * @param Request $request
@@ -109,66 +175,49 @@ class ChatController extends Controller
      */
     public function loadMessagesAction(Request $request): JsonResponse
     {
-        // тут мы получили переменную переданную нашим java-скриптом при помощи ajax
-        // это:  $_POST['last'] - номер последнего сообщения которое загрузилось у пользователя
-
-        $last_message_id = intval($_POST['last']); // возвращает целое значение переменной
-
-        // выполняем запрос к базе данных для получения 10 сообщений последних сообщений с номером большим чем $last_message_id
-        $query = mysql_query("SELECT * FROM messages WHERE ( id > $last_message_id ) ORDER BY id DESC LIMIT 10");
-
-        // проверяем есть ли какие-нибудь новые сообщения
-        if (mysql_num_rows($query) > 0) {
-        // начинаем формировать javascript который мы передадим клиенту
-        $js = 'var chat = $("#chat_area");'; // получаем "указатель" на div, в который мы добавим новые сообщения
-
-        // следующий конструкцией мы получаем массив сообщений из нашего запроса
-        $messages = array();
-        while ($row = mysql_fetch_array($query)) {
-        $messages[] = $row;
-        }
-
-        // записываем номер последнего сообщения
-        // [0] - это вернёт нам первый элемент в массиве $messages, но так как мы выполнили запрос с параметром "DESC" (в обратном порядке),
-        // то это получается номер последнего сообщения в базе данных
-        $last_message_id = $messages[0]['id'];
-
-        // переворачиваем массив (теперь он в правильном порядке)
-        $messages = array_reverse($messages);
-
-        // идём по всем элементам массива $messages
-        foreach ($messages as $value) {
-        // продолжаем формировать скрипт для отправки пользователю
-        $js .= 'chat.append("<span>' . $value['name'] . '&raquo; ' . $value['text'] . '</span>");'; // добавить сообщние (<span>Имя &raquo; текст сообщения</span>) в наш div
-        }
-
-        $js .= "last_message_id = $last_message_id;"; // запишем номер последнего полученного сообщения, что бы в следующий раз начать загрузку с этого сообщения
-
-        // отправляем полученный код пользователю, где он будет выполнен при помощи функции eval()
-        echo $js;
-        }
-
-        
-        
         $errors['showMessages'] = '';
+        $userRepo = $this->getDoctrine()
+                ->getManager()
+                ->getRepository(User::class);
         
-        $messages = [];
+        // достаём переданные ajax-ом переменные
+        $activeUser = $userRepo->find($request->get('activeUser'));
+        $friend = $userRepo->find($request->get('friend'));
+        $lastMessageId = $request->get('lastMessageId');
         
-        $em = $this->getDoctrine()->getManager();
-        $messages = $em->getRepository(Message::class)->findBy([
-            'user_id' => $data['user_id'],
-            'lastMessageId' => $lastMessageId
+        
+        $allMessages = $this->findAllUserToUserMessages($activeUser, $friend);
+        if (empty($allMessages)) {
+            $errors['showMessages'] = 'Здесь ещё нет ни одного сообщения'; 
+            return new JsonResponse([
+                'loadingMessages' => null,
+                'lastLoadMessageId' => null,
+                'error' => $errors,
+            ]);
+        }
             
-        ]);
-        
-        
-        
-        if (empty($messages)) {
-            $errors['showMessages'] = 'Здесь ещё нет ни одного сообщения';
+        // если id последнего сообщения не передаётся, достаём всю переписку пользователей
+        if (empty($lastMessageId)) {
+            $loadingMessages = $allMessages;
+            $lastLoadMessageId = end($allMessages)->getId();
+            return new JsonResponse([
+                'loadingMessages' => $loadingMessages,
+                'lastLoadMessageId' => $lastLoadMessageId,
+                'error' => $errors,
+            ]);
         }
         
-        return JsonResponse([
-            'messages' => $messages,
+        // если получен id последнего загруженного сообщения, достаём только сообщения 
+        //  где id > id последнего загруженного
+        foreach ($allMessages as $message) {
+            if ($message->getId() > $lastMessageId) {
+                $loadingMessages[] = $message;
+            }
+        }
+        
+        return new JsonResponse([
+            'loadingMessages' => $loadingMessages,
+            'lastLoadMessageId' => $lastLoadMessageId,
             'error' => $errors,
         ]);
     }

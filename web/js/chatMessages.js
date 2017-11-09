@@ -2,13 +2,14 @@ $(function(){
     $("#chat_content").focus(); // по поле ввода сообщения ставим фокус
     setInterval("loadMessages();", 2000); // создаём таймер который будет вызывать загрузку сообщений каждые 2 секунды (2000 миллисекунд)
             
-    var lastMessageId = 0; // номер последнего сообщения, что получил пользователь
+//    var lastMessageId = 0; // номер последнего сообщения, что получил пользователь
     var loadingStarted = false; // можем ли мы выполнять сейчас загрузку сообщений. Сначала стоит false, что значит - да, можем
-
-    saveMessages();
-    loadMessages(loadingStarted, lastMessageId);
+    
     chooseUser();
     clearUser();
+    
+    saveMessages();
+    
 });
 
 function saveMessages()
@@ -16,7 +17,6 @@ function saveMessages()
     $('#chat_submit').on('click', function(){
         var message = $('#chat_content').val();
         var userId = $('div.chat-area').attr('data-user');
-        
         console.log('saving... ' + message + ' в переписку с ' + userId);
         
         $.ajax({
@@ -30,7 +30,9 @@ function saveMessages()
         })
         .done(function(res) {
             console.log(res);
-            loadMessages();
+            if(!loadingStarted) {
+                loadMessages();
+            }
         })
         .fail(function(xhr, status, error){
             $('.holder-loader').removeClass('open');
@@ -60,59 +62,70 @@ function saveMessages()
 
 function loadMessages()
 {
+    loadingStarted = true;
+
+    var activeUser = $('div.chat-area ').attr('data-admin');
+    var friend = $('div.chat-area').attr('data-user');
+    var lastMessageId = $('div.chat-area table').attr('data-last-load-message-id');
     
-    // Проверяем можем ли мы загружать сообщения. Это сделано для того, чтобы мы не начали загрузку заново, если старая загрузка ещё не закончилась.
-    if(!loadingStarted) {
-        loadingStarted = true; // загрузка началась
-        // отсылаем запрос серверу, который вернёт нам javascript
-        $.ajax({
-            act: "load", // указываем на то что это загрузка сообщений
-            last: last_message_id, // передаём номер последнего сообщения который получил пользователь в прошлую загрузку
-            rand: (new Date()).getTime()
-        },
-        function (result) { // в эту функцию в качестве параметра передаётся javascript код, который мы должны выполнить
-            $(".chat").scrollTop($(".chat").get(0).scrollHeight); // прокручиваем сообщения вниз
-            loadingStarted = false; // говорим что загрузка закончилась, можем теперь начать новую загрузку
-        });
-                
-    }
-          
-    if(!loadingStarted) {
-        loadingStarted = true;
+    console.log('Админ: ' + activeUser);
+    console.log('Друг: ' + friend);
+    console.log('Последнее сообщение: ' + lastMessageId);
         
-        $.ajax({
-            url: '/chat/loading',
-            type: 'post',
-            dataType: 'json',
-            data: {
-                lastMessageId: lastMessageId
+    $.ajax({
+        url: '/chat/loading',
+        type: 'post',
+        dataType: 'json',
+        data: {
+            lastMessageId: lastMessageId,
+            activeUser: activeUser,
+            friend: friend
+        }
+//            rand: (new Date()).getTime()
+    })
+    .done(function(res) {
+        console.log(res);
+        for (var message in res.loadingMessages) {
+            console.log('От кого сообщение: ' + message.userFrom);
+            if (message.userFrom === activeUser) {
+                $("div.chat-area table tr.admin-message-").clone();
+                var adminMessageArea = $("div.chat-area table tr.admin-message-").last();
+                $(adminMessageArea).attr('class', 'admin-message-' + message.id);
+                $(adminMessageArea + ':last-child').val(message.content);
             }
-        })
-        .done(function(res) {
-            console.log(res);
+            // и тоже самое для друга
+            if (message.userFrom === friend) {
+                $("div.chat-area table tr.user-message-").clone();
+                var userMessageArea = $("div.chat-area table tr.user-message-").last();
+                $(userMessageArea).attr('class', 'user-message-' + message.id);
+                $(userMessageArea + ':first-child').val(message.content);
+            }
+            
+//            chat.append('<span>' + message.userFrom + '<br>' + message.content + '</span>');
+        }
+         $("div.chat-area table").attr('data-last-load-message-id', res.lastLoadMessageId);
 
-        })
-        .fail(function(xhr, status, error){
-            $('.holder-loader').removeClass('open');
+    })
+    .fail(function(xhr, status, error){
+        $('.holder-loader').removeClass('open');
 
-             // выводим значения переменных
-            console.log('ajaxError status:', status);
-            console.log('ajaxError error:', error);
+         // выводим значения переменных
+        console.log('ajaxError status:', status);
+        console.log('ajaxError error:', error);
 
-            // соберем самое интересное в переменную
-            var errorInfo = 'Ошибка выполнения запроса: '
-                    + '\n[' + xhr.status + ' ' + status   + ']'
-                    +  ' ' + error + ' \n '
-                    + xhr.responseText
-                    + '<br>'
-                    + xhr.responseJSON;
+        // соберем самое интересное в переменную
+        var errorInfo = 'Ошибка выполнения запроса: '
+                + '\n[' + xhr.status + ' ' + status   + ']'
+                +  ' ' + error + ' \n '
+                + xhr.responseText
+                + '<br>'
+                + xhr.responseJSON;
 
-            console.log('ajaxError:', errorInfo); // в консоль
-            alert(errorInfo); // если требуется и то на экран
-        });
+        console.log('ajaxError:', errorInfo); // в консоль
+        alert(errorInfo); // если требуется и то на экран
+    });
 
-        loadingStarted = false;
-    }    
+    loadingStarted = false;
 }
 
 function chooseUser()
@@ -123,6 +136,8 @@ function chooseUser()
         
         $('div.chat-area').attr('data-user', userId);
         console.log('data-user:' + $('div.chat-area').attr('data-user'));
+
+        $('#chat-area-conteiner').css('display','block');
     });
 }
 
@@ -132,6 +147,7 @@ function clearUser()
         if (event.keyCode === 27) {
             $('div.chat-area').attr('data-user', 'nobody');
             console.log('data-user после esc:' + $('div.chat-area').attr('data-user'));
+            $('#chat-area-conteiner').css('display','none');
         }
     });
 }

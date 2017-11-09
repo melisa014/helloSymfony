@@ -10,30 +10,30 @@
             {% endif %}
             <table>
                 {% for friend in friends %}
-                    <tr id="{{ friend.id }}">
+                    <tr id={{ friend.id }}>
                         <td>{{ friend.username }}</td>
-                        <td>Текст сообщения</td>
+                        <td id="{{ friend.id }}-last-message">{{ lastMessages[friend.id] }}</td>
                     </tr>
                 {% endfor %}
             </table>
         </div>
     </div>
     
-    <div class='chat-area-conteiner'>
+    <div class='chat-area-conteiner' id='chat-area-conteiner' style='display: none'>
         <h3>Область чата</h3>
-        <div class='chat-area' data-user="nobody">
+        <div class='chat-area' data-user="nobody" data-admin='{{ app.user.id }}'>
             {% if error.showMessages %}
                 <div>{{ error.showMessages }}</div>
             {% endif %}
-            <table>
-                <tr>
-                  <td>Сообщение юзера</td>
-                  <td></td>
+            <table data-last-load-message-id="">
+                <tr class="user-message-" style='display: none'>
+                    <td></td>
+                    <td></td>
                 </tr>
-                <tr>
-                  <td></td>
-                  <td>Сообщение админа</td>
-                </tr>
+                <tr class="admin-message-" style='display: none'>
+                    <td></td>
+                    <td></td>
+               </tr>
             </table>
         </div>
     </div>
