@@ -1,3 +1,18 @@
 /*.chat-area {
-    display : none
+    display : none;
 }*/
+.chat-area table tr {
+    width: 300px;
+}
+
+.chat-area table tr :first-child {
+    margin-left: 200px;
+}
+
+.chat-area table tr :last-child {
+    margin-right: 20px;
+}
+
+.chat-area table {
+    width: 600px;
+}

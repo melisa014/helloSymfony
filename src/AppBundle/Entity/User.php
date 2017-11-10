@@ -5,6 +5,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use IFF\ChatBundle\Entity\Message;
+use JsonSerializable;
 use FOS\UserBundle\Model\User as BaseUser;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -12,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
  * @ORM\Entity
  * @ORM\Table(name="`user`")
  */
-class User extends BaseUser
+class User extends BaseUser implements JsonSerializable
 {
     /**
      * @var int
@@ -252,5 +253,10 @@ class User extends BaseUser
     public function getMyFriends()
     {
         return $this->myFriends;
+    }
+    
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
     }
 }

@@ -82,7 +82,12 @@ class ChatController extends Controller
             }
             
             // сохраняем в массив последнее сообщение с индексом == id друга
-            $usersLastMessages[$friend->getId()] = $messageRepo->find($usersLastMessageId)->getContent();
+            if (!empty($userToUserMessages)){
+                $usersLastMessages[$friend->getId()] = $messageRepo->find($usersLastMessageId)->getContent();
+            }
+            else {
+                $usersLastMessages[$friend->getId()] = "Сообщений нет";
+            }
         }
         
         return $usersLastMessages;
@@ -187,8 +192,10 @@ class ChatController extends Controller
         
         
         $allMessages = $this->findAllUserToUserMessages($activeUser, $friend);
+        
         if (empty($allMessages)) {
             $errors['showMessages'] = 'Здесь ещё нет ни одного сообщения'; 
+            
             return new JsonResponse([
                 'loadingMessages' => null,
                 'lastLoadMessageId' => null,
@@ -197,9 +204,11 @@ class ChatController extends Controller
         }
             
         // если id последнего сообщения не передаётся, достаём всю переписку пользователей
+        // эта часть работает
         if (empty($lastMessageId)) {
             $loadingMessages = $allMessages;
             $lastLoadMessageId = end($allMessages)->getId();
+            
             return new JsonResponse([
                 'loadingMessages' => $loadingMessages,
                 'lastLoadMessageId' => $lastLoadMessageId,
@@ -211,9 +220,13 @@ class ChatController extends Controller
         //  где id > id последнего загруженного
         foreach ($allMessages as $message) {
             if ($message->getId() > $lastMessageId) {
+//                $message->getTimestamp() = $message->getTimestamp()->jsonSerialize();
+//                $message->getUserFrom() = $message->getUserFrom()->jsonSerialize();
+//                $message->getUserTo() = $message->getUserTo()->jsonSerialize();
                 $loadingMessages[] = $message;
             }
         }
+        $lastLoadMessageId = end($loadingMessages)->getId();
         
         return new JsonResponse([
             'loadingMessages' => $loadingMessages,
@@ -279,19 +292,30 @@ class ChatController extends Controller
          $em = $this->getDoctrine()->getManager();
         
         $activeUser = $this->getUser();
-        $friend = $em->getRepository(User::class)->find(2);
+        $friend = $em->getRepository(User::class)->find(3);
         
-        $friends_1 = $activeUser->getMyFriends();
-        $friendsWhitMe_1 = $activeUser->getFriendsWithMe();       
+//        $friends_1 = $activeUser->getMyFriends();
+//        $friendsWhitMe_1 = $activeUser->getFriendsWithMe();       
+//        
+//        $friends = $friend->getMyFriends();
+//        $friendsWhitMe = $friend->getFriendsWithMe();
+//
+//        dump($friends_1->getValues());
+//        dump($friendsWhitMe_1->getValues());
+//        
+//        dump($friends->getValues());
+//        dump($friendsWhitMe->getValues());
         
-        $friends = $friend->getMyFriends();
-        $friendsWhitMe = $friend->getFriendsWithMe();
-
-        dump($friends_1->getValues());
-        dump($friendsWhitMe_1->getValues());
+        $allMessages = $this->findAllUserToUserMessages($activeUser, $friend);
+        $lastMessageId = 41;
+        foreach ($allMessages as $message) {
+            if ($message->getId() > $lastMessageId) {
+                $loadingMessages[] = $message;
+            }
+        }
+        $lastLoadMessageId = end($loadingMessages)->getId();
         
-        dump($friends->getValues());
-        dump($friendsWhitMe->getValues());
+        dump($loadingMessages);
         
         die('sfe');
         

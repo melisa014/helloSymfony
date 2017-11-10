@@ -1,18 +1,20 @@
 $(function(){
-    $("#chat_content").focus(); // по поле ввода сообщения ставим фокус
-    setInterval("loadMessages();", 2000); // создаём таймер который будет вызывать загрузку сообщений каждые 2 секунды (2000 миллисекунд)
-            
+//    alertObj(obj);
+    
 //    var lastMessageId = 0; // номер последнего сообщения, что получил пользователь
     var loadingStarted = false; // можем ли мы выполнять сейчас загрузку сообщений. Сначала стоит false, что значит - да, можем
     
+    $("#chat_content").focus(); // по поле ввода сообщения ставим фокус
+//    setInterval("loadMessages(loadingStarted);", 2000); // создаём таймер который будет вызывать загрузку сообщений каждые 2 секунды (2000 миллисекунд)
+            
     chooseUser();
     clearUser();
     
-    saveMessages();
+    saveMessages(loadingStarted);
     
 });
 
-function saveMessages()
+function saveMessages(loadingStarted)
 {
     $('#chat_submit').on('click', function(){
         var message = $('#chat_content').val();
@@ -31,25 +33,25 @@ function saveMessages()
         .done(function(res) {
             console.log(res);
             if(!loadingStarted) {
-                loadMessages();
+                loadMessages(loadingStarted);
             }
         })
         .fail(function(xhr, status, error){
             $('.holder-loader').removeClass('open');
 
              // выводим значения переменных
-            console.log('ajaxError status:', status);
-            console.log('ajaxError error:', error);
+            console.log('SAVING ajaxError status:', status);
+            console.log('SAVING ajaxError error:', error);
 
             // соберем самое интересное в переменную
-            var errorInfo = 'Ошибка выполнения запроса: '
+            var errorInfo = 'SAVING Ошибка выполнения запроса: '
                     + '\n[' + xhr.status + ' ' + status   + ']'
                     +  ' ' + error + ' \n '
                     + xhr.responseText
-                    + '<br>'
+                    + '\n'
                     + xhr.responseJSON;
 
-            console.log('ajaxError:', errorInfo); // в консоль
+            console.log('SAVING ajaxError:', errorInfo); // в консоль
             alert(errorInfo); // если требуется и то на экран
         });
         
@@ -60,17 +62,18 @@ function saveMessages()
     });
 }
 
-function loadMessages()
+function loadMessages(loadingStarted)
 {
     loadingStarted = true;
 
+    console.log('LOADING ...');
     var activeUser = $('div.chat-area ').attr('data-admin');
     var friend = $('div.chat-area').attr('data-user');
     var lastMessageId = $('div.chat-area table').attr('data-last-load-message-id');
     
-    console.log('Админ: ' + activeUser);
-    console.log('Друг: ' + friend);
-    console.log('Последнее сообщение: ' + lastMessageId);
+//    console.log('Админ: ' + activeUser);
+//    console.log('Друг: ' + friend);
+//    console.log('Последнее сообщение: ' + lastMessageId);
         
     $.ajax({
         url: '/chat/loading',
@@ -81,51 +84,60 @@ function loadMessages()
             activeUser: activeUser,
             friend: friend
         }
-//            rand: (new Date()).getTime()
     })
     .done(function(res) {
         console.log(res);
-        for (var message in res.loadingMessages) {
-            console.log('От кого сообщение: ' + message.userFrom);
-            if (message.userFrom === activeUser) {
-                $("div.chat-area table tr.admin-message-").clone();
-                var adminMessageArea = $("div.chat-area table tr.admin-message-").last();
-                $(adminMessageArea).attr('class', 'admin-message-' + message.id);
-                $(adminMessageArea + ':last-child').val(message.content);
+        let loadingMessages = res.loadingMessages;
+        console.log(res.loadingMessages);
+            for (let key in loadingMessages){
+                let message = loadingMessages[key];
+                if (message.userFrom.id == friend) {
+                    // клонируем шаблон
+                    $("#user-message-").clone().appendTo("div.chat-area table tbody");
+                    // даём уникальный id клону
+                    $('div.chat-area table tbody tr').last().attr('id', 'user-message-' + message.id);
+                    // добавляем сообщениев ленту
+                    $('tr#user-message-' + message.id + ' td').first().html(message.content).css('color', 'green');
+                    // показываем новый блок
+                    $('#user-message-' + message.id).css('display','block');
+                }
+                if (message.userFrom.id == activeUser) {
+                    // клонируем шаблон
+                    $("#admin-message-").clone().appendTo("div.chat-area table tbody");
+                    // даём уникальный id клону
+                    $('div.chat-area table tbody tr').last().attr('id', 'admin-message-' + message.id);
+                    // добавляем сообщениев ленту
+                    $('tr#admin-message-' + message.id + ' td').last().html(message.content).css('color', 'blue');
+                    // показываем новый блок
+                    $('#admin-message-' + message.id).css('display','block');
+                }
+                
             }
-            // и тоже самое для друга
-            if (message.userFrom === friend) {
-                $("div.chat-area table tr.user-message-").clone();
-                var userMessageArea = $("div.chat-area table tr.user-message-").last();
-                $(userMessageArea).attr('class', 'user-message-' + message.id);
-                $(userMessageArea + ':first-child').val(message.content);
-            }
-            
-//            chat.append('<span>' + message.userFrom + '<br>' + message.content + '</span>');
-        }
-         $("div.chat-area table").attr('data-last-load-message-id', res.lastLoadMessageId);
+        $("div.chat-area table").attr('data-last-load-message-id', res.lastLoadMessageId);
 
     })
     .fail(function(xhr, status, error){
         $('.holder-loader').removeClass('open');
 
          // выводим значения переменных
-        console.log('ajaxError status:', status);
-        console.log('ajaxError error:', error);
+        console.log('LOADING ajaxError status:', status);
+        console.log('LOADING ajaxError error:', error);
 
         // соберем самое интересное в переменную
-        var errorInfo = 'Ошибка выполнения запроса: '
+        var errorInfo = 'LOADING Ошибка выполнения запроса: '
                 + '\n[' + xhr.status + ' ' + status   + ']'
                 +  ' ' + error + ' \n '
                 + xhr.responseText
                 + '<br>'
                 + xhr.responseJSON;
 
-        console.log('ajaxError:', errorInfo); // в консоль
+        console.log('LOADING ajaxError:', errorInfo); // в консоль
         alert(errorInfo); // если требуется и то на экран
     });
 
     loadingStarted = false;
+    
+    return loadingStarted;
 }
 
 function chooseUser()
@@ -151,5 +163,3 @@ function clearUser()
         }
     });
 }
-
-

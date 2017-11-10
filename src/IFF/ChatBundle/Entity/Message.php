@@ -2,15 +2,16 @@
 
 namespace IFF\ChatBundle\Entity;
 
+use AppBundle\Entity\User;
 use Doctrine\ORM\Mapping as ORM;
 use DateTime;
-use AppBundle\Entity\User;
+use JsonSerializable;
 
 /**
  * @ORM\Table(name="message")
  * @ORM\Entity
  */
-class Message 
+class Message implements JsonSerializable
 {
     /**
      * @var int
@@ -78,7 +79,7 @@ class Message
         $this->content = $content;
         
         return $this;
-    }
+    }       
     
     /**
      * @return DateTime
@@ -146,5 +147,10 @@ class Message
         $this->userTo = $userTo;
         
         return $this;
+    }
+    
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
     }
 }
