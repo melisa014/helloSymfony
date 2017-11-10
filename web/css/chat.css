@@ -6,11 +6,11 @@
 }
 
 .chat-area table tr :first-child {
-    margin-left: 200px;
+    /*text-align: left;*/
 }
 
 .chat-area table tr :last-child {
-    margin-right: 20px;
+    /*text-align: right;*/
 }
 
 .chat-area table {

@@ -3,17 +3,14 @@
 namespace IFF\ChatBundle\Controller;
 
 use AppBundle\Entity\User;
-use AppBundle\Entity\Friend;
 use DateTime;
 use IFF\ChatBundle\Entity\Message;
 use IFF\ChatBundle\Form\ChatType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Debug\Debug;
 
 /**
  * @Route("/chat")
@@ -220,9 +217,6 @@ class ChatController extends Controller
         //  где id > id последнего загруженного
         foreach ($allMessages as $message) {
             if ($message->getId() > $lastMessageId) {
-//                $message->getTimestamp() = $message->getTimestamp()->jsonSerialize();
-//                $message->getUserFrom() = $message->getUserFrom()->jsonSerialize();
-//                $message->getUserTo() = $message->getUserTo()->jsonSerialize();
                 $loadingMessages[] = $message;
             }
         }
@@ -282,9 +276,6 @@ class ChatController extends Controller
     }
     
     /**
-     * Печатает, кто с кем дружит(для 2х пользователей). по таблице в БД, 
-     *  к сожалению, не всегда понятно, пусты ли поля myFriends и friendsWithMe
-     * 
      * @Route("/check")
      */
     public function testAction()
@@ -294,6 +285,8 @@ class ChatController extends Controller
         $activeUser = $this->getUser();
         $friend = $em->getRepository(User::class)->find(3);
         
+        //Печатает, кто с кем дружит(для 2х пользователей). по таблице в БД, 
+        // к сожалению, не всегда понятно, пусты ли поля myFriends и friendsWithMe
 //        $friends_1 = $activeUser->getMyFriends();
 //        $friendsWhitMe_1 = $activeUser->getFriendsWithMe();       
 //        
@@ -305,19 +298,6 @@ class ChatController extends Controller
 //        
 //        dump($friends->getValues());
 //        dump($friendsWhitMe->getValues());
-        
-        $allMessages = $this->findAllUserToUserMessages($activeUser, $friend);
-        $lastMessageId = 41;
-        foreach ($allMessages as $message) {
-            if ($message->getId() > $lastMessageId) {
-                $loadingMessages[] = $message;
-            }
-        }
-        $lastLoadMessageId = end($loadingMessages)->getId();
-        
-        dump($loadingMessages);
-        
-        die('sfe');
         
         return new $this->redirectToRoute('homepage');
     }

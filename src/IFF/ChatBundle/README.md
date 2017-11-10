@@ -180,3 +180,20 @@ Step 4: Связь с таблицей пользователей
         return $this->recervedMessage; 
     }
 ```
+
+Step 5: JavaScript
+
+1) файл chatMessages.js -- перенести в ваш проект
+
+2) для передачи объектов с private свойствами методом json необходимо подключить 
+к вашему классу пользователей интерфейс JsonSerializable и переопределить метод jsonSerialize():
+```php
+class User extends BaseUser implements JsonSerializable
+{
+    ... 
+    public function jsonSerialize()
+    {
+        return get_object_vars($this);
+    }
+}
+```
