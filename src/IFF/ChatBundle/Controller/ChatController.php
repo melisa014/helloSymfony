@@ -42,7 +42,7 @@ class ChatController extends Controller
         
         $form = $this->createForm(ChatType::class);
         
-        return $this->render('IFFChatBundle:Chat:index.html.twig', [
+        return $this->render('IFFChatBundle:Chat:index_outer.html.twig', [
             'form' => $form->createView(),
             'error' => $errors,
             'friends' => $friendList,

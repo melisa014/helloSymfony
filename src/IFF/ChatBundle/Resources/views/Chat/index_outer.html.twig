@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block content %}
+    <div class="menu">
+        <div class="back"><i class="fa fa-chevron-left"></i> {#<img src="" draggable="false"/>#}</div>
+        <div class="name">Выберите собеседника...</div>
+        <div class="last"></div>
+    </div>
+
+    <div class='friends-list-conteiner'>
+        <h3>Ваши друзья</h3>
+        <div>
+            {% if error.anyFriends %}
+                <div>{{ error.anyFriends }}</div>
+            {% endif %}
+            <table>
+                {% for friend in friends %}
+                    <tr id='{{ friend.id }}' data-username='{{ friend.username }}' data-last='{{ friend.lastLogin.date }}'>
+                        <td>{{ friend.username }}</td>
+                        <td id="{{ friend.id }}-last-message">{{ lastMessages[friend.id] }}</td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+            
+    <div class='chat-area-conteiner' id='chat-area-conteiner' style='display: none'>        
+        <h3>Новая область чата</h3>
+        <ol class="chat">
+        
+            <div class='chat-area' data-user="nobody" data-admin='{{ app.user.id }}' data-last-load-message-id="">
+                {% if error.showMessages %}
+                    <div>{{ error.showMessages }}</div>
+                {% endif %}
+                <div data-last-load-message-id="">
+                    <li class="other" id="user-message-0" style='display: none'>
+                        <div class="avatar"><img src="" draggable="false"/></div>
+                        <div class="msg">
+                            <p></p>
+                            <time></time>
+                        </div>
+                    </li>
+                    <li class="self" id="admin-message-0" style='display: none'>
+                        <div class="avatar"><img src="" draggable="false"/></div>
+                        <div class="msg">
+                            <p></p>
+                            <time></time>
+                        </div>
+                    </li>
+                </div>
+            </div>
+                
+        </ol>
+    </div>
+                
+                {#Так будет выглядеть сообщение со смайлом#}
+                {# <p>Aún estoy haciendo el contexto de Góngora... <emoji class="books"/></p>#}
+            
+    <div class='form-messaging-conteiner'>
+        {% if error.sendMessage %}
+            <div>{{ error.sendMessage }}</div>
+        {% endif %}
+        {{ form_start(form, {'method': 'post'}) }}
+            <div>{{ form_widget(form.content, {'class': 'textarea'}) }}</div>
+            <div>{{ form_widget(form.submit) }}</div>
+
+        {{ form_end(form) }}
+        <div class="emojis"></div>
+    </div>
+
+{% endblock %}

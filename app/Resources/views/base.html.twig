@@ -1,11 +1,9 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <head>
         <meta charset="UTF-8">
         <title>Hello Symfony</title>
-        <link href="{{ asset('css/chat.css') }}" rel="stylesheet" />
-    </head>
+        <link href="{{ asset('css/chat_outer.css') }}" rel="stylesheet" />
     </head>
     <body>
         {% block body %}
@@ -25,7 +23,7 @@
             
         {% endblock %}
         {% block javascripts %}
-            <script src="/js/jquery-3.2.1.js"</script>
+            <script src="/js/jquery-3.2.1.js"></script>
             <script src="/js/main.js"></script>
             <script src="/js/chatMessages.js"></script>
             <script src="/js/sendSms.js"></script>
